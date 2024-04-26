@@ -21,6 +21,8 @@ reg [1:3] robot_orientation;
 reg [1:9] n_movements;
 reg [1:48] robot_orientation_string;
 
+reg [1:2] trash_removal_state;
+
 integer i;
 
 Robo_Limpa_Tubos DUV (.clock(clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
@@ -30,14 +32,6 @@ always
 
 initial
 begin
-	clock = 0;
-    // robot starts with reset active
-	reset = 1;
-	head = 0;
-	left = 0;
-    under = 0;
-    barrier = 0;
-
     // TODO: Change to relative path
 	$readmemb("/home/felipema/quartus_projects/Robo_Limpa_Tubos/Mapa.txt", map);
 	robot_row = {map[0][1], map[0][2]};
@@ -45,28 +39,35 @@ begin
 	robot_orientation = map[0][5];
 	n_movements = {map[0][6], map[0][7], map[0][8]};
     get_robot_orientation_string;
-    $display ("\nInitial data:\nRow = %d | Column =%d | Orientation =%s | Max_Movements = %d\n", robot_row, robot_column, robot_orientation_string, n_movements);
+    $display ("\nInitial data:\nRow = %d | Column =%d | Orientation =%s | Max_Movements = %d", robot_row, robot_column, robot_orientation_string, n_movements);
 
 	if (check_anomalous_situations(0)) $stop;
 
-    // After 1ns, reset is deactivated and robot starts moving
-    // Negedge clock is always on even time, and remember that robot only updates state on negedge clock
-	#1 reset = 1;
+    trash_removal_state = 0;
 
-    // Sensor are updated instantly when reset
+    clock = 0;
+	reset = 1;
+    define_sensors_values;
+    $display ("Initial sensors data: Head = %b | Left = %b | Barrier = %b | Under = %b\n", head, left, barrier, under);
+
+    // keep reset high for enough time for robot to do a syncronous reset
+    #4 reset = 0;
+
+    // sensors are updated instantly when reset
 	for (i = 0; i < n_movements; i = i + 1)
 	begin
         $display ("Time = %0t", $time);
 		define_sensors_values;
-		$display ("Head = %b | Left = %b | Under = %b | Barrier = %b", head, left, under, barrier);
-        // wait next negedge clock to check robot actions after sensors update
-        @ (negedge clock);
+		$display ("Head = %b | Left = %b | Barrier = %b | Under = %b", head, left, barrier, under);
+        // wait next posedge clock to check robot actions after sensors update
+        @ (posedge clock);
         $display ("Time = %0t", $time);
 		update_robot_position;
+        remove_trash;
         get_robot_orientation_string;
 		$display ("Row = %d | Column =%d | Orientation = %s | Removing trash = %d\n", robot_row, robot_column, robot_orientation_string, remove);
 		if (check_anomalous_situations(0)) $stop;
-        #1; // sensor values are updated 1ns after robot position update (on posedge clock)
+        #1; // sensor values are updated 1ns after robot position update (on negedge clock)
 	end
 
 	#1 $stop;
@@ -204,6 +205,27 @@ begin
                 robot_orientation = south;
         end
     endcase
+end
+endtask
+
+task remove_trash;
+begin
+    //TODO: add clock cycles to remove trash with trash_removal_state
+    if (remove == 1)
+        case(robot_orientation)
+            north: begin
+                map[robot_row - 1][robot_column] = 0;
+            end
+            south: begin
+                map[robot_row + 1][robot_column] = 0;
+            end
+            east: begin
+                map[robot_row][robot_column + 1] = 0;
+            end
+            west: begin
+                map[robot_row][robot_column - 1] = 0;
+            end
+        endcase
 end
 endtask
 
