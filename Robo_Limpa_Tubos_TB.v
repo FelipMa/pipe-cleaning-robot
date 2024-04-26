@@ -31,6 +31,7 @@ always
 initial
 begin
 	clock = 0;
+    // robot starts with reset active
 	reset = 1;
 	head = 0;
 	left = 0;
@@ -48,18 +49,24 @@ begin
 
 	if (check_anomalous_situations(0)) $stop;
 
-	#2 @ (negedge clock) reset = 0; // sync with falling edge
+    // After 1ns, reset is deactivated and robot starts moving
+    // Negedge clock is always on even time, and remember that robot only updates state on negedge clock
+	#1 reset = 1;
 
+    // Sensor are updated instantly when reset
 	for (i = 0; i < n_movements; i = i + 1)
 	begin
-		@ (negedge clock);
+        $display ("Time = %0t", $time);
 		define_sensors_values;
 		$display ("Head = %b | Left = %b | Under = %b | Barrier = %b", head, left, under, barrier);
-		@ (negedge clock);
+        // wait next negedge clock to check robot actions after sensors update
+        @ (negedge clock);
+        $display ("Time = %0t", $time);
 		update_robot_position;
         get_robot_orientation_string;
-		$display ("Row = %d | Column =%d | Orientation = %s\n", robot_row, robot_column, robot_orientation_string);
+		$display ("Row = %d | Column =%d | Orientation = %s | Removing trash = %d\n", robot_row, robot_column, robot_orientation_string, remove);
 		if (check_anomalous_situations(0)) $stop;
+        #1; // sensor values are updated 1ns after robot position update (on posedge clock)
 	end
 
 	#1 $stop;
