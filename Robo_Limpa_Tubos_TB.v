@@ -32,7 +32,7 @@ always
 
 initial
 begin
-    // TODO: Change to relative path
+    // TODO: Change to relative path (aperently, linux doesn't support relative paths)
 	$readmemb("/home/felipema/quartus_projects/Robo_Limpa_Tubos/Mapa.txt", map);
 	robot_row = {map[0][1], map[0][2]};
 	robot_column = {map[0][3], map[0][4]};
@@ -210,22 +210,29 @@ endtask
 
 task remove_trash;
 begin
-    //TODO: add clock cycles to remove trash with trash_removal_state
     if (remove == 1)
-        case(robot_orientation)
-            north: begin
-                map[robot_row - 1][robot_column] = 0;
+        begin
+        if (trash_removal_state == 0 || trash_removal_state == 1)
+            trash_removal_state = trash_removal_state + 1;
+        else
+            begin
+                trash_removal_state = 0;
+                case(robot_orientation)
+                    north: begin
+                        map[robot_row - 1][robot_column] = 0;
+                    end
+                    south: begin
+                        map[robot_row + 1][robot_column] = 0;
+                    end
+                    east: begin
+                        map[robot_row][robot_column + 1] = 0;
+                    end
+                    west: begin
+                        map[robot_row][robot_column - 1] = 0;
+                    end
+                endcase
             end
-            south: begin
-                map[robot_row + 1][robot_column] = 0;
-            end
-            east: begin
-                map[robot_row][robot_column + 1] = 0;
-            end
-            west: begin
-                map[robot_row][robot_column - 1] = 0;
-            end
-        endcase
+        end
 end
 endtask
 
