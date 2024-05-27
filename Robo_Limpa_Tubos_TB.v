@@ -11,9 +11,6 @@ wire front, turn, remove;
 // each cell is 3 bits long
 reg [1:3] map [0:10][1:20];
 
-// 20 cells * 3 bits/cell
-reg [1:60] map_row;
-
 // regs for robot initial data
 reg [1:6] robot_row;
 reg [1:6] robot_column;
