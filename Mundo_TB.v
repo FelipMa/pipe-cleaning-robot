@@ -22,29 +22,24 @@ always
 
 initial
 begin
-    $display ("Time = %0t", $time);
-    $display ("Initial data: Row = %d | Column =%d | Orientation = %s | Clock = %b | Reset = %b", robot_row, robot_column, robot_orientation, clock, reset);
-
     $display ("Resetting...");
 	reset = 1;
 
     // keep reset high for enough time for robot to do a syncronous reset
     #4 reset = 0;
-    #1;
 
     get_robot_orientation_string;
     $display ("Data after reset: Row = %d | Column =%d | Orientation = %s", robot_row, robot_column, robot_orientation_string);
 
     // sensors are updated instantly when reset
-	for (i = 0; i < 50; i = i + 1)
+	for (i = 0; i < 100; i = i + 1)
 	begin
         get_robot_orientation_string;
         $display ("Time = %0t", $time);
         $display ("Data: Row = %d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
 		if (check_anomalous_situations(0)) $stop;
-        // wait two posedge clock to check robot actions after sensors update
-        @ (posedge clock);
-        @ (posedge clock);
+        // wait for robot to move
+        #4;
 	end
 
 	#1 $stop;
