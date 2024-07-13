@@ -180,7 +180,7 @@ end
 
 always @(posedge clock)
 begin
-    if (reset)
+    if (~reset)
         begin
             act_state <= reseting;
         end

@@ -1,7 +1,6 @@
 module vga_sync (clock_50, reset_key, vga_hs, vga_vs, video_on, p_tick, pixel_x, pixel_y);
 
-input wire clock_50;
-input wire [3:0] reset_key;
+input wire clock_50, reset_key;
 output wire vga_hs, vga_vs, video_on, p_tick; // Hsync, vsync são para sincronizar; video_on é flag do vídeo, 
 output wire [9:0] pixel_x, pixel_y; // 
 
@@ -28,8 +27,8 @@ wire v_sync_next , h_sync_next;
 //
 wire h_end , v_end , pixel_tick; // Sinais de estado. end são os finais da zona de display, pixel_tick será o clock dos pixels.
 
-always @(posedge clock_50 or negedge reset_key[0]) begin
-	if (~reset_key[0]) begin // se reset estiver ativo, então os registradores resetarão, isto é, terão seus valores iguais a zero.
+always @(posedge clock_50 or negedge reset_key) begin
+	if (~reset_key) begin // se reset estiver ativo, então os registradores resetarão, isto é, terão seus valores iguais a zero.
 		mod2_reg <= 0;
 		v_count_reg <= 0;
 		h_count_reg <= 0;

@@ -18,7 +18,7 @@ reg robot_clock = 0;
 output reg [1:6] robot_row, robot_column; // set to output for testing
 output reg [1:3] robot_orientation; // set to output for testing
 
-reg [1:5] map_draw [1:200];
+reg [4:0] map_draw [199:0]; // 20x10 matrix, each cell is 5 bits long
 
 reg [1:2] trash_removal_state = 0;
 
@@ -38,7 +38,11 @@ end
 
 robot robot (.clock(robot_clock), .reset(KEY[0]), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
-vga vga (.clock_50(CLOCK_50), .reset_key(KEY), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .vga_r(VGA_R), .vga_g(VGA_G), .vga_b(VGA_B));
+vga vga (.clock_50(CLOCK_50), .reset_key(KEY[0]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .vga_r(VGA_R), .vga_g(VGA_G), .vga_b(VGA_B));
+
+// TODO: remove vga module and instantiate graphics and vga sync modules on world
+
+// TODO: change reset logic on every module to reset on negedge
 
 // TODO: state machine for world with clock divider, reseting state, vga and robot
 

@@ -1,7 +1,6 @@
 module vga (clock_50, reset_key, vga_hs, vga_vs, vga_r, vga_g, vga_b);
 
-input wire clock_50;
-input wire [3:0] reset_key;
+input wire clock_50, reset_key;
 output wire vga_hs, vga_vs;
 output wire [7:0] vga_r;
 output wire [7:0] vga_g;

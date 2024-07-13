@@ -25,10 +25,10 @@ always
 initial
 begin
     $display ("Resetting...");
-	reset = 1;
+	reset = 0;
 
-    // keep reset high for enough time for robot to do a syncronous reset
-    #4 reset = 0;
+    // keep reset key pressed enough time for robot to do a syncronous reset
+    #4 reset = 1;
 
     get_robot_orientation_string;
     $display ("Data after reset: Row = %d | Column =%d | Orientation = %s", robot_row, robot_column, robot_orientation_string);
