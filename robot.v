@@ -1,4 +1,4 @@
-module Robo_Limpa_Tubos (clock, reset, head, left, under, barrier, front, turn, remove);
+module robot (clock, reset, head, left, under, barrier, front, turn, remove);
 
 output reg front, turn, remove;
 input head, left, under, barrier, clock, reset;

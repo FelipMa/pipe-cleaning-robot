@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
 
-module Robo_Limpa_Tubos_TB;
+module robot_tb;
 
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
@@ -22,15 +22,15 @@ reg [1:2] trash_removal_state;
 
 integer i;
 
-Robo_Limpa_Tubos DUV (.clock(clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
+robot DUV (.clock(clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
 always
 	#1 clock = !clock;
 
 initial
 begin
-    // TODO: Change to relative path (aperently, linux doesn't support relative paths)
-	$readmemb("/home/felipema/quartus_projects/Robo_Limpa_Tubos/Mapa.txt", map);
+    // TODO: Check path
+	$readmemb("map.txt", map);
 	robot_row = {map[0][1], map[0][2]};
 	robot_column = {map[0][3], map[0][4]};
 	robot_orientation = map[0][5];
@@ -71,7 +71,7 @@ begin
 end
 
 // Input is mandatory in Verilog
-function automatic integer check_anomalous_situations(input X);
+function integer check_anomalous_situations(input X);
 begin
     // Robot outside the map
     if ( (robot_row < 1) || (robot_row > 10) || (robot_column < 1) || (robot_column > 20) )
