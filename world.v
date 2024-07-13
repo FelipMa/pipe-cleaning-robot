@@ -1,4 +1,4 @@
-module Mundo (clock, reset, robot_row, robot_column, robot_orientation);
+module world (clock, reset, robot_row, robot_column, robot_orientation);
 
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
@@ -27,14 +27,14 @@ reg [1:3] map [1:220];
 
 initial
 begin
-    // TODO: Change to relative path (aperently, linux doesn't support relative paths)
-	$readmemb("/home/felipema/quartus_projects/Robo_Limpa_Tubos/Mapa.txt", map);
+    // TODO: Check path
+	$readmemb("map.txt", map);
 	robot_row = {map[1], map[2]};
 	robot_column = {map[3], map[4]};
 	robot_orientation = map[5];
 end
 
-Robo_Limpa_Tubos robot (.clock(robot_clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
+robot robot (.clock(robot_clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
 // TODO: state machine for world with clock divider, reseting state, vga and robot
 
@@ -191,7 +191,7 @@ begin
 end
 endtask
 
-function automatic integer get_map_address(input [1:6] row, column);
+function integer get_map_address(input [1:6] row, column);
 begin
     get_map_address = (row * 20) + column;
 end
