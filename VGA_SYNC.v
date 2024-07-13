@@ -28,8 +28,8 @@ wire v_sync_next , h_sync_next;
 //
 wire h_end , v_end , pixel_tick; // Sinais de estado. end são os finais da zona de display, pixel_tick será o clock dos pixels.
 
-always @(posedge CLOCK_50 or posedge KEY[0]) begin
-	if (KEY[0]) begin // se reset estiver ativo, então os registradores resetarão, isto é, terão seus valores iguais a zero.
+always @(posedge CLOCK_50 or negedge KEY[0]) begin
+	if (~KEY[0]) begin // se reset estiver ativo, então os registradores resetarão, isto é, terão seus valores iguais a zero.
 		mod2_reg <= 0;
 		v_count_reg <= 0;
 		h_count_reg <= 0;
