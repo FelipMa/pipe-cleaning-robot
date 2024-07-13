@@ -5,17 +5,19 @@ module world_tb;
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
 reg clock = 0;
-reg reset = 0;
+reg [3:0] reset = 0;
 
 wire [1:6] robot_row;
 wire [1:6] robot_column;
 wire [1:3] robot_orientation;
+wire vga_hs, vga_vs;
+wire [7:0] vga_r, vga_g, vga_b;
 
 reg [1:48] robot_orientation_string;
 
 integer i;
 
-world DUV (.clock(clock), .reset(reset), .robot_row(robot_row), .robot_column(robot_column), .robot_orientation(robot_orientation));
+world DUV (.CLOCK_50(clock), .KEY(reset), .VGA_HS(vga_hs), .VGA_VS(vga_vs), .VGA_R(vga_r), .VGA_G(vga_g), .VGA_B(vga_b), .robot_row(robot_row), .robot_column(robot_column), .robot_orientation(robot_orientation));
 
 always
 	#1 clock = !clock;

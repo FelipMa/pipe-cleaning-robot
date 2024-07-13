@@ -1,22 +1,24 @@
-module world (clock, reset, robot_row, robot_column, robot_orientation);
+module world (CLOCK_50, KEY, VGA_HS, VGA_VS, VGA_R, VGA_G, VGA_B, robot_row, robot_column, robot_orientation);
 
-parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
-
-input clock, reset;
+input wire CLOCK_50;
+input wire [3:0] KEY;
+output wire VGA_HS, VGA_VS;
+output wire [7:0] VGA_R, VGA_G, VGA_B;
 
 // Inputs for robot
 reg head, left, under, barrier;
 // Outputs from robot
 wire front, turn, remove;
 
+parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
+
 // Internal regs
 reg robot_clock = 0;
-reg robot_clock_counter = 0;
 
 output reg [1:6] robot_row, robot_column; // set to output for testing
 output reg [1:3] robot_orientation; // set to output for testing
 
-reg [1:4] map_draw [1:200];
+reg [1:5] map_draw [1:200];
 
 reg [1:2] trash_removal_state = 0;
 
@@ -27,18 +29,20 @@ reg [1:3] map [1:220];
 
 initial
 begin
-    // TODO: Check path
+    // WARNING: On tb error, check if map.txt is in the same folder as the testbench
 	$readmemb("map.txt", map);
 	robot_row = {map[1], map[2]};
 	robot_column = {map[3], map[4]};
 	robot_orientation = map[5];
 end
 
-robot robot (.clock(robot_clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
+robot robot (.clock(robot_clock), .reset(KEY[0]), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
+
+vga vga (.clock_50(CLOCK_50), .reset_key(KEY), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .vga_r(VGA_R), .vga_g(VGA_G), .vga_b(VGA_B));
 
 // TODO: state machine for world with clock divider, reseting state, vga and robot
 
-always @(posedge clock)
+always @(posedge CLOCK_50)
 begin
     // update robot position when it is moving, update sensors when it is between clock cycles
     if (robot_clock == 0) // clock will go up

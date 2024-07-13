@@ -1,8 +1,8 @@
-module vga_sync(CLOCK_50, KEY, VGA_HS, VGA_VS, video_on, p_tick, pixel_x, pixel_y);
+module vga_sync (clock_50, reset_key, vga_hs, vga_vs, video_on, p_tick, pixel_x, pixel_y);
 
-input wire CLOCK_50;
-input wire [3:0] KEY;
-output wire VGA_HS, VGA_VS, video_on, p_tick; // Hsync, vsync são para sincronizar; video_on é flag do vídeo, 
+input wire clock_50;
+input wire [3:0] reset_key;
+output wire vga_hs, vga_vs, video_on, p_tick; // Hsync, vsync são para sincronizar; video_on é flag do vídeo, 
 output wire [9:0] pixel_x, pixel_y; // 
 
 /* declarações das constantes da vga. Isto é, o tamanho da barra preta, o tamanho horizontal, vertical, demora da volta do emissor de elétrons, etc;
@@ -28,8 +28,8 @@ wire v_sync_next , h_sync_next;
 //
 wire h_end , v_end , pixel_tick; // Sinais de estado. end são os finais da zona de display, pixel_tick será o clock dos pixels.
 
-always @(posedge CLOCK_50 or negedge KEY[0]) begin
-	if (~KEY[0]) begin // se reset estiver ativo, então os registradores resetarão, isto é, terão seus valores iguais a zero.
+always @(posedge clock_50 or negedge reset_key[0]) begin
+	if (~reset_key[0]) begin // se reset estiver ativo, então os registradores resetarão, isto é, terão seus valores iguais a zero.
 		mod2_reg <= 0;
 		v_count_reg <= 0;
 		h_count_reg <= 0;
@@ -77,14 +77,11 @@ assign h_sync_next = !(h_count_reg>=(HD+HB) && h_count_reg<=(HD+HB+HR-1));
 assign v_sync_next = !(v_count_reg>=(VD+VB) && v_count_reg<=(VD+VB+VR-1)); 
 assign video_on = (h_count_reg<HD) && (v_count_reg<VD);
 
-
 //outputs
-assign VGA_HS = h_sync_reg; 
-assign VGA_VS = v_sync_reg; 
+assign vga_hs = h_sync_reg; 
+assign vga_vs = v_sync_reg; 
 assign pixel_x = h_count_reg; 
 assign pixel_y = v_count_reg; 
 assign p_tick = pixel_tick; 
-
-
 
 endmodule

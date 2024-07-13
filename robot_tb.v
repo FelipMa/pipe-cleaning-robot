@@ -29,7 +29,7 @@ always
 
 initial
 begin
-    // TODO: Check path
+    // WARNING: On tb error, check if map.txt is in the same folder as the testbench
 	$readmemb("map.txt", map);
 	robot_row = {map[0][1], map[0][2]};
 	robot_column = {map[0][3], map[0][4]};
