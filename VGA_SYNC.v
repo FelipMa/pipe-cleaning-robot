@@ -1,4 +1,4 @@
-module VGA_SYNC(CLOCK_50, KEY, VGA_HS, VGA_VS, video_on, p_tick, pixel_x, pixel_y);
+module vga_sync(CLOCK_50, KEY, VGA_HS, VGA_VS, video_on, p_tick, pixel_x, pixel_y);
 
 input wire CLOCK_50;
 input wire [3:0] KEY;
