@@ -8,13 +8,13 @@ parameter MAX_X = 640;
 parameter MAX_Y = 480;
 
 // agora, os parâmetros da coluna 
-parameter WALL_X_L = 32;
-parameter WALL_X_R = 35;
+parameter WALL_X_L = 30;
+parameter WALL_X_R = 40;
 
 wire wall_on;
 wire [2:0] wall_rgb;
 
-assign wall_on = (WALL_X_L<=pix_x) && (pix_x<=WALL_X_R); 
+assign wall_on = (WALL_X_L <= pix_x) && (WALL_X_R >= pix_x); 
 assign wall_rgb = 3'b001; // azul
 
 always @* begin

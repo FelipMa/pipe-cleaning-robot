@@ -1,4 +1,4 @@
-`timescale 1ns/1ns
+`timescale 10ns/10ns // 50 MHz
 
 module world_tb;
 

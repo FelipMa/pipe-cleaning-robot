@@ -27,6 +27,9 @@ reg [1:2] trash_removal_state = 0;
 // memory must be linear, so every row is concatenated
 reg [1:3] map [1:220];
 
+// internal wires
+wire pll_clk_25;
+
 initial
 begin
     // WARNING: On tb error, check if map.txt is in the same folder as the testbench
@@ -36,9 +39,11 @@ begin
 	robot_orientation = map[5];
 end
 
+pll	pll (.inclk0(CLOCK_50), .c0(pll_clk_25));
+
 robot robot (.clock(robot_clock), .reset(KEY[0]), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
-vga vga (.clock_50(CLOCK_50), .reset_key(KEY[0]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .vga_r(VGA_R), .vga_g(VGA_G), .vga_b(VGA_B));
+vga vga (.clock_25(pll_clk_25), .reset_key(KEY[0]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .vga_r(VGA_R), .vga_g(VGA_G), .vga_b(VGA_B));
 
 // TODO: remove vga module and instantiate graphics and vga sync modules on world
 

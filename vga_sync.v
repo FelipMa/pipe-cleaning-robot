@@ -1,6 +1,6 @@
-module vga_sync (clock_50, reset_key, vga_hs, vga_vs, video_on, p_tick, pixel_x, pixel_y);
+module vga_sync (clock_25, reset_key, vga_hs, vga_vs, video_on, p_tick, pixel_x, pixel_y);
 
-input wire clock_50, reset_key;
+input wire clock_25, reset_key;
 output wire vga_hs, vga_vs, video_on, p_tick; // Hsync, vsync são para sincronizar; video_on é flag do vídeo, 
 output wire [9:0] pixel_x, pixel_y; // 
 
@@ -11,23 +11,22 @@ parameter HD = 640; // Tamanho do display horizontal //// Nota: Todos são EM PI
 parameter HF = 48; // Tamanho da borda esquerda, (H)orizontal((F)ront)
 parameter HB = 16; // Tamanho da borda direita, (H)orizontal ((B)ack)
 parameter HR = 96 ; // Tamanho, em pixels, do retrace. Isto é, o tempo, em pixels, do retorno do feixe de elétrons da direita pro início;
-parameter VD = 480; // Tamanho do display vertical; 
+parameter VD = 480; // Tamanho do display vertical;
 parameter VF = 33; // Tamanho da borda vertical frontal, (topo)
 parameter VB = 10; // Tamanho da borda vertical back, (de baixo)
 parameter VR = 2; // Tamanho do deslocamento vertical 
 //
-//                                 
 reg mod2_reg; // Utilizaremos um MOD-2 para sincronizar o clock do VGA com o clock do FPGA. O FPGA:50MHz oscillator for clock sources (página 8), enquanto
 wire mod2_next; // o VGA, com 640x480 tem pixel clock de 25MHZ 
 reg [9:0] h_count_reg, h_count_next;// contadores de sincronização. ELE É IMPORTANTE E SERVE PARA SABERMOS 
 reg [9:0] v_count_reg, v_count_next;// EXATAMENTE ONDE O FEIXE DE ELÉTRONS ESTÁ, PARA CONSEGUIR EXIBIR CORRETAMENTE OS GRÁFICOS!!!
 //
-reg v_sync_reg , h_sync_reg; 
-wire v_sync_next , h_sync_next;
+reg v_sync_reg, h_sync_reg;
+wire v_sync_next, h_sync_next;
 //
 wire h_end , v_end , pixel_tick; // Sinais de estado. end são os finais da zona de display, pixel_tick será o clock dos pixels.
 
-always @(posedge clock_50 or negedge reset_key) begin
+always @(posedge clock_25 or negedge reset_key) begin
 	if (~reset_key) begin // se reset estiver ativo, então os registradores resetarão, isto é, terão seus valores iguais a zero.
 		mod2_reg <= 0;
 		v_count_reg <= 0;
@@ -39,8 +38,8 @@ always @(posedge clock_50 or negedge reset_key) begin
 		mod2_reg <= mod2_next;
 		v_count_reg <= v_count_next;
 		h_count_reg <= h_count_next;
-		v_sync_reg <= v_sync_next ; 
-		h_sync_reg <= h_sync_next ;
+		v_sync_reg <= v_sync_next;
+		h_sync_reg <= h_sync_next;
 	end
 end
 
@@ -77,10 +76,10 @@ assign v_sync_next = !(v_count_reg>=(VD+VB) && v_count_reg<=(VD+VB+VR-1));
 assign video_on = (h_count_reg<HD) && (v_count_reg<VD);
 
 //outputs
-assign vga_hs = h_sync_reg; 
-assign vga_vs = v_sync_reg; 
-assign pixel_x = h_count_reg; 
-assign pixel_y = v_count_reg; 
-assign p_tick = pixel_tick; 
+assign vga_hs = h_sync_reg;
+assign vga_vs = v_sync_reg;
+assign pixel_x = h_count_reg;
+assign pixel_y = v_count_reg;
+assign p_tick = pixel_tick;
 
 endmodule
