@@ -15,17 +15,17 @@ wire [9:0] pixel_x, pixel_y;
 wire video_on;
  
 // build vga
-vga_sync duv_vga_sync(.clock_25(clock), .reset_key(reset_key[0]), .vga_hs(vga_hs), .vga_vs(vga_vs), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
+vga_sync duv_vga_sync(.clock_25(clock), .reset_key(reset_key[1]), .vga_hs(vga_hs), .vga_vs(vga_vs), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
 
 graphics duv_graphics(.clock_25(clock), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(vga_r), .graph_g(vga_g), .graph_b(vga_b));
  
 initial begin
     clock = 1'b0;
-    reset_key = 3'b1;
+    reset_key = 4'b1111;
     #1
-    reset_key = 3'b0;
+    reset_key = 4'b0;
     #4
-    reset_key = 3'b1;
+    reset_key = 4'b1111;
     file = $fopen("img.ppm");
     $fdisplay(file, "P3\n640 480\n255");
     $fwrite(file, "0   0   0 ");

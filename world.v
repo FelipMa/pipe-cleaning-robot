@@ -12,10 +12,9 @@ reg robot_clock = 0;
 reg head, left, under, barrier; // Inputs for robot
 reg [1:6] robot_row, robot_column;
 reg [1:3] robot_orientation;
-reg [4:0] map_draw [199:0]; // 20x10 matrix, each cell is 5 bits long
 reg [1:2] trash_removal_state = 0;
 
-// map is a 11x20 matrix, but only 10x20 is used (map[0] is used for robot initial data)
+// map is a 11x20 matrix, but only 10x20 is used (first line is used for robot initial data)
 // each cell is 3 bits long
 // memory must be linear, so every row is concatenated
 reg [1:3] map [1:220];
@@ -26,8 +25,7 @@ wire pll_clk_25;
 wire [9:0] pixel_x, pixel_y;
 wire video_on;
 
-initial
-begin
+initial begin
     // WARNING: On tb error, check if map.txt is in the same folder as the testbench
 	$readmemb("map.txt", map);
 	robot_row = {map[1], map[2]};
@@ -42,27 +40,12 @@ pll	pll (.inclk0(CLOCK_50), .c0(pll_clk_25));
 robot robot (.clock(robot_clock), .reset(KEY[0]), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
 // build vga
-vga_sync sync(.clock_25(pll_clk_25), .reset_key(KEY[0]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
+vga_sync vga_sync(.clock_25(pll_clk_25), .reset_key(KEY[1]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
 
-graphics graf(.clock_25(pll_clk_25), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(VGA_R), .graph_g(VGA_G), .graph_b(VGA_B));
+graphics graphics(.clock_25(pll_clk_25), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(VGA_R), .graph_g(VGA_G), .graph_b(VGA_B));
 
 // TODO: state machine for world with clock divider, reseting state, vga and robot
 
-always @(posedge CLOCK_50) begin
-    // update robot position when it is moving, update sensors when it is between clock cycles
-    if (robot_clock == 0) // clock will go up
-        begin
-            update_robot_position;
-            remove_trash;
-        end
-    else
-        begin
-            define_sensors_values;
-        end
-    robot_clock <= ~robot_clock;
-end
-
-/*
 always @(posedge CLOCK_50)
 begin
     robot_clock <= ~robot_clock;
@@ -79,7 +62,6 @@ always @(robot_clock) begin
             define_sensors_values;
         end
 end
-*/
 
 task define_sensors_values;
 begin

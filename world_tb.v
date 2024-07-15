@@ -31,11 +31,11 @@ begin
     clock = 1'b0;
 
     $display ("Resetting...");
-	reset_key = 3'b1;
+	reset_key = 4'b1111;
     #1
-    reset_key = 3'b0;
+    reset_key = 4'b0;
     #4
-    reset_key = 3'b1;
+    reset_key = 4'b1111;
 
     get_robot_orientation_string;
     $display ("Data after reset: Row =%d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
