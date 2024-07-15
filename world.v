@@ -1,4 +1,4 @@
-module world (CLOCK_50, KEY, VGA_HS, VGA_VS, VGA_R, VGA_G, VGA_B, robot_row, robot_column, robot_orientation);
+module world (CLOCK_50, KEY, VGA_HS, VGA_VS, VGA_R, VGA_G, VGA_B);
 
 input wire CLOCK_50;
 input wire [3:0] KEY;
@@ -10,8 +10,8 @@ parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 // Internal regs
 reg robot_clock = 0;
 reg head, left, under, barrier; // Inputs for robot
-output reg [1:6] robot_row, robot_column; // set to output for testing
-output reg [1:3] robot_orientation; // set to output for testing
+reg [1:6] robot_row, robot_column;
+reg [1:3] robot_orientation;
 reg [4:0] map_draw [199:0]; // 20x10 matrix, each cell is 5 bits long
 reg [1:2] trash_removal_state = 0;
 

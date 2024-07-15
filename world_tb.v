@@ -4,8 +4,8 @@ module world_tb;
 
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
-reg clock = 0;
-reg [3:0] reset = 0;
+reg clock;
+reg [3:0] reset_key;
 
 wire [1:6] robot_row;
 wire [1:6] robot_column;
@@ -17,28 +17,35 @@ reg [1:48] robot_orientation_string;
 
 integer i;
 
-world DUV (.CLOCK_50(clock), .KEY(reset), .VGA_HS(vga_hs), .VGA_VS(vga_vs), .VGA_R(vga_r), .VGA_G(vga_g), .VGA_B(vga_b), .robot_row(robot_row), .robot_column(robot_column), .robot_orientation(robot_orientation));
+world DUV (.CLOCK_50(clock), .KEY(reset_key), .VGA_HS(vga_hs), .VGA_VS(vga_vs), .VGA_R(vga_r), .VGA_G(vga_g), .VGA_B(vga_b));
+
+assign robot_row = DUV.robot_row;
+assign robot_column = DUV.robot_column;
+assign robot_orientation = DUV.robot_orientation;
 
 always
 	#1 clock = !clock;
 
 initial
 begin
-    $display ("Resetting...");
-	reset = 0;
+    clock = 1'b0;
 
-    // keep reset key pressed enough time for robot to do a syncronous reset
-    #4 reset = 1;
+    $display ("Resetting...");
+	reset_key = 3'b1;
+    #1
+    reset_key = 3'b0;
+    #4
+    reset_key = 3'b1;
 
     get_robot_orientation_string;
-    $display ("Data after reset: Row = %d | Column =%d | Orientation = %s", robot_row, robot_column, robot_orientation_string);
+    $display ("Data after reset: Row =%d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
 
     // sensors are updated instantly when reset
 	for (i = 0; i < 100; i = i + 1)
 	begin
         get_robot_orientation_string;
         $display ("Time = %0t", $time);
-        $display ("Data: Row = %d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
+        $display ("Data: Row =%d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
 		if (check_anomalous_situations(0)) $stop;
         // wait for robot to move
         #4;
@@ -54,6 +61,7 @@ begin
     if ( (robot_row < 1) || (robot_row > 10) || (robot_column < 1) || (robot_column > 20) )
         begin
             $display ("Anomalous situation: Robot outside the map");
+            $display ("Data: Row =%d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
             check_anomalous_situations = 1;
         end
     else

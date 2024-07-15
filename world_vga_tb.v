@@ -16,8 +16,10 @@ world DUV (.CLOCK_50(clock), .KEY(reset_key), .VGA_HS(vga_hs), .VGA_VS(vga_vs), 
 initial begin
     clock = 1'b0;
     reset_key = 3'b1;
-    #1 reset_key = 3'b0;
-    #4 reset_key = 3'b1;
+    #1
+    reset_key = 3'b0;
+    #4
+    reset_key = 3'b1;
     file = $fopen("img.ppm");
     $fdisplay(file, "P3\n640 480\n255");
     $fwrite(file, "0   0   0 ");
