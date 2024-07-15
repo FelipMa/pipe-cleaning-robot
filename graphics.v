@@ -1,7 +1,7 @@
-module graphics (video_on, pix_x, pix_y, graph_rgb);
-input wire video_on;
+module graphics (clock_25, video_on, pix_x, pix_y, graph_r, graph_g, graph_b);
+input wire clock_25, video_on;
 input wire [9:0] pix_x, pix_y;
-output reg [2:0] graph_rgb;
+output reg [7:0] graph_r, graph_g, graph_b;
 
 // posições máximas dos pixels do display de gráfico
 parameter MAX_X = 640;
@@ -11,20 +11,40 @@ parameter MAX_Y = 480;
 parameter WALL_X_L = 30;
 parameter WALL_X_R = 40;
 
+// internal wires
 wire wall_on;
-wire [2:0] wall_rgb;
 
+// internal registers
+reg [7:0] r_next, g_next, b_next;
+
+// assignments
 assign wall_on = (WALL_X_L <= pix_x) && (WALL_X_R >= pix_x); 
-assign wall_rgb = 3'b001; // azul
 
-always @* begin
-	if (~video_on)
-		graph_rgb = 3'b000; // preto
+always @(video_on or wall_on) begin
+	if (~video_on) begin
+		r_next = 8'd0;
+        g_next = 8'd0;
+        b_next = 8'd0;
+    end
 	else
-		if(wall_on)
-			graph_rgb = wall_rgb;
-		else
-			graph_rgb = 3'b110; // fundo amarelo
+		if(wall_on) begin
+            // azul
+			r_next = 8'd0;
+            g_next = 8'd0;
+            b_next = 8'd129;
+        end
+		else begin
+            // amarelo
+			r_next = 8'd128;
+            g_next = 8'd128;
+            b_next = 8'd0;
+        end
+end
+
+always @(posedge clock_25) begin
+    graph_r <= r_next;
+    graph_g <= g_next;
+    graph_b <= b_next;
 end
 
 endmodule

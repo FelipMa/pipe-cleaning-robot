@@ -5,21 +5,14 @@ input wire [3:0] KEY;
 output wire VGA_HS, VGA_VS;
 output wire [7:0] VGA_R, VGA_G, VGA_B;
 
-// Inputs for robot
-reg head, left, under, barrier;
-// Outputs from robot
-wire front, turn, remove;
-
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
 // Internal regs
 reg robot_clock = 0;
-
+reg head, left, under, barrier; // Inputs for robot
 output reg [1:6] robot_row, robot_column; // set to output for testing
 output reg [1:3] robot_orientation; // set to output for testing
-
 reg [4:0] map_draw [199:0]; // 20x10 matrix, each cell is 5 bits long
-
 reg [1:2] trash_removal_state = 0;
 
 // map is a 11x20 matrix, but only 10x20 is used (map[0] is used for robot initial data)
@@ -28,7 +21,10 @@ reg [1:2] trash_removal_state = 0;
 reg [1:3] map [1:220];
 
 // internal wires
+wire front, turn, remove; // Outputs from robot
 wire pll_clk_25;
+wire [9:0] pixel_x, pixel_y;
+wire video_on;
 
 initial
 begin
@@ -39,20 +35,20 @@ begin
 	robot_orientation = map[5];
 end
 
+// build PLL
 pll	pll (.inclk0(CLOCK_50), .c0(pll_clk_25));
 
+// build robot
 robot robot (.clock(robot_clock), .reset(KEY[0]), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
-vga vga (.clock_25(pll_clk_25), .reset_key(KEY[0]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .vga_r(VGA_R), .vga_g(VGA_G), .vga_b(VGA_B));
+// build vga
+vga_sync sync(.clock_25(pll_clk_25), .reset_key(KEY[0]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
 
-// TODO: remove vga module and instantiate graphics and vga sync modules on world
-
-// TODO: change reset logic on every module to reset on negedge
+graphics graf(.clock_25(pll_clk_25), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(VGA_R), .graph_g(VGA_G), .graph_b(VGA_B));
 
 // TODO: state machine for world with clock divider, reseting state, vga and robot
 
-always @(posedge CLOCK_50)
-begin
+always @(posedge CLOCK_50) begin
     // update robot position when it is moving, update sensors when it is between clock cycles
     if (robot_clock == 0) // clock will go up
         begin
@@ -65,6 +61,25 @@ begin
         end
     robot_clock <= ~robot_clock;
 end
+
+/*
+always @(posedge CLOCK_50)
+begin
+    robot_clock <= ~robot_clock;
+end
+
+always @(robot_clock) begin
+    if (robot_clock == 0) // clock will go up
+        begin
+            update_robot_position;
+            remove_trash;
+        end
+    else
+        begin
+            define_sensors_values;
+        end
+end
+*/
 
 task define_sensors_values;
 begin

@@ -1,7 +1,7 @@
-module vga_sync (clock_25, reset_key, vga_hs, vga_vs, video_on, p_tick, pixel_x, pixel_y);
+module vga_sync (clock_25, reset_key, vga_hs, vga_vs, video_on, pixel_x, pixel_y);
 
 input wire clock_25, reset_key;
-output wire vga_hs, vga_vs, video_on, p_tick; // Hsync, vsync são para sincronizar; video_on é flag do vídeo, 
+output wire vga_hs, vga_vs, video_on; // Hsync, vsync são para sincronizar; video_on é flag do vídeo, 
 output wire [9:0] pixel_x, pixel_y; // 
 
 /* declarações das constantes da vga. Isto é, o tamanho da barra preta, o tamanho horizontal, vertical, demora da volta do emissor de elétrons, etc;
@@ -54,7 +54,7 @@ always @* begin
 		if(h_end)
 			h_count_next = 0;
 		else
-			h_count_next = h_count_reg + 1;
+			h_count_next = h_count_reg + 1'b1;
 	end
 	else
 		h_count_next = h_count_reg;
@@ -65,7 +65,7 @@ always @* begin
 		if (v_end)
 			v_count_next = 0;
 		else
-			v_count_next = v_count_reg + 1;
+			v_count_next = v_count_reg + 1'b1;
 	end
 	else
 		v_count_next = v_count_reg;
@@ -80,6 +80,5 @@ assign vga_hs = h_sync_reg;
 assign vga_vs = v_sync_reg;
 assign pixel_x = h_count_reg;
 assign pixel_y = v_count_reg;
-assign p_tick = pixel_tick;
 
 endmodule
