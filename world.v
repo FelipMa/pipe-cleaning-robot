@@ -40,9 +40,10 @@ pll	pll (.inclk0(CLOCK_50), .c0(pll_clk_25));
 robot robot (.clock(robot_clock), .reset(KEY[0]), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
 // build vga
-vga_sync vga_sync(.clock_25(pll_clk_25), .reset_key(KEY[1]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
+vga_sync vga_sync(.clock_50(CLOCK_50), .clock_25(pll_clk_25), .reset_key(KEY[1]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
 
-graphics graphics(.clock_25(pll_clk_25), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(VGA_R), .graph_g(VGA_G), .graph_b(VGA_B));
+// build the graphics
+graphics graphics(.clock_50(CLOCK_50), .clock_25(pll_clk_25), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(VGA_R), .graph_g(VGA_G), .graph_b(VGA_B));
 
 // TODO: state machine for world with clock divider, reseting state, vga and robot
 
