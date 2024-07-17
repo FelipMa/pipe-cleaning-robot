@@ -22,7 +22,8 @@ assign wall_on = (WALL_X_L <= pix_x) && (WALL_X_R >= pix_x);
 
 always @(video_on or wall_on) begin
 	if (~video_on) begin
-		r_next = 8'd0;
+        // vermelho
+		r_next = 8'd128;
         g_next = 8'd0;
         b_next = 8'd0;
     end
