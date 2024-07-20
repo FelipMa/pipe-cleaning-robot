@@ -178,16 +178,14 @@ begin
     endcase
 end
 
-always @(posedge clock)
+always @(posedge clock or negedge reset)
 begin
-    if (~reset)
-        begin
-            act_state <= reseting;
-        end
-    else
-        begin
-            act_state <= next_state;
-        end
+    if (~reset) begin
+        act_state <= reseting;
+    end
+    else begin
+        act_state <= next_state;
+    end
 end
 
 endmodule

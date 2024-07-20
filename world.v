@@ -31,9 +31,23 @@ robot robot (.clock(robot_clock), .reset(reset_key), .head(head), .left(left), .
 
 // TODO control world with remote controller
 
-always @(posedge clock_50)
-begin
-    robot_clock <= ~robot_clock;
+parameter DIV_FACTOR = 28'd200000000; // Divide by 200Mhz for 0.25hz (1 cycle every 4 seconds)
+
+reg [27:0] counter = 28'b0;
+
+always @(posedge clock_50 or negedge reset_key) begin
+    if (~reset_key) begin
+        counter <= 0;
+        robot_clock <= 1'b0;
+    end
+    else
+    if (counter == DIV_FACTOR - 1'b1) begin
+        counter <= 0;
+        robot_clock <= ~robot_clock;
+    end
+    else begin
+        counter <= counter + 1'b1;
+    end
 end
 
 always @(robot_clock) begin

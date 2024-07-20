@@ -1,5 +1,5 @@
-module graphics (clock_50, clock_25, video_on, pix_x, pix_y, graph_r, graph_g, graph_b);
-input wire clock_50, clock_25, video_on;
+module graphics (clock_50, video_on, pix_x, pix_y, graph_r, graph_g, graph_b);
+input wire clock_50, video_on;
 input wire [9:0] pix_x, pix_y;
 output reg [7:0] graph_r, graph_g, graph_b;
 

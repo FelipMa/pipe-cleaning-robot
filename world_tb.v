@@ -28,11 +28,11 @@ begin
     clock = 1'b0;
 
     $display ("Resetting...");
-	reset_key = 4'b1111;
-    #1
-    reset_key = 4'b0;
-    #4
-    reset_key = 4'b1111;
+	reset_key = 1'b1;
+
+    #2 reset_key = 1'b0;
+    
+    #2 reset_key = 1'b1;
 
     get_robot_orientation_string;
     $display ("Data after reset: Row =%d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
@@ -45,11 +45,17 @@ begin
         $display ("Data: Row =%d | Column =%d | Orientation =%s", robot_row, robot_column, robot_orientation_string);
 		if (check_anomalous_situations(0)) $stop;
         // wait for robot to move
-        #4;
+        await_4s;
 	end
 
 	#1 $stop;
 end
+
+task await_4s;
+begin
+    #400000000;
+end
+endtask
 
 // Input is mandatory in Verilog
 function integer check_anomalous_situations(input X);

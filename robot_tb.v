@@ -43,13 +43,14 @@ begin
     trash_removal_state = 0;
 
     clock = 0;
-	reset = 0;
+	reset = 1;
+
+    #2 reset = 0;
+
+    #2 reset = 1;
+
     define_sensors_values;
     $display ("Initial sensors data: Head = %b | Left = %b | Barrier = %b | Under = %b\n", head, left, barrier, under);
-
-    // keep reset key pressed enough time for robot to do a syncronous reset
-    #4 reset = 1;
-
     // sensors are updated instantly when reset
 	for (i = 0; i < n_movements; i = i + 1)
 	begin
