@@ -4,20 +4,17 @@ module world_tb;
 
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
-reg clock;
-reg [3:0] reset_key;
+reg clock, reset_key;
 
 wire [1:6] robot_row;
 wire [1:6] robot_column;
 wire [1:3] robot_orientation;
-wire vga_hs, vga_vs;
-wire [7:0] vga_r, vga_g, vga_b;
 
 reg [1:48] robot_orientation_string;
 
 integer i;
 
-world DUV (.CLOCK_50(clock), .KEY(reset_key), .VGA_HS(vga_hs), .VGA_VS(vga_vs), .VGA_R(vga_r), .VGA_G(vga_g), .VGA_B(vga_b));
+world DUV (.clock_50(clock), .reset_key(reset_key));
 
 assign robot_row = DUV.robot_row;
 assign robot_column = DUV.robot_column;
@@ -81,5 +78,3 @@ end
 endtask
 
 endmodule
-
-

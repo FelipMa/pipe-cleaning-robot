@@ -1,18 +1,14 @@
-module world (CLOCK_50, KEY, VGA_HS, VGA_VS, VGA_R, VGA_G, VGA_B);
-
-input wire CLOCK_50;
-input wire [3:0] KEY;
-output wire VGA_HS, VGA_VS;
-output wire [7:0] VGA_R, VGA_G, VGA_B;
+module world(clock_50, reset_key);
+input wire clock_50, reset_key;
 
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
 // Internal regs
-reg robot_clock = 0;
+reg robot_clock = 1'b0;
 reg head, left, under, barrier; // Inputs for robot
 reg [1:6] robot_row, robot_column;
 reg [1:3] robot_orientation;
-reg [1:2] trash_removal_state = 0;
+reg [1:0] trash_removal_state = 2'b00;
 
 // map is a 11x20 matrix, but only 10x20 is used (first line is used for robot initial data)
 // each cell is 3 bits long
@@ -21,9 +17,6 @@ reg [1:3] map [1:220];
 
 // internal wires
 wire front, turn, remove; // Outputs from robot
-wire pll_clk_25;
-wire [9:0] pixel_x, pixel_y;
-wire video_on;
 
 initial begin
     // WARNING: On tb error, check if map.txt is in the same folder as the testbench
@@ -33,27 +26,18 @@ initial begin
 	robot_orientation = map[5];
 end
 
-// build PLL
-pll	pll (.inclk0(CLOCK_50), .c0(pll_clk_25));
-
 // build robot
-robot robot (.clock(robot_clock), .reset(KEY[0]), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
+robot robot (.clock(robot_clock), .reset(reset_key), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
-// build vga
-vga_sync vga_sync(.clock_50(CLOCK_50), .clock_25(pll_clk_25), .reset_key(KEY[1]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
+// TODO control world with remote controller
 
-// build the graphics
-graphics graphics(.clock_50(CLOCK_50), .clock_25(pll_clk_25), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(VGA_R), .graph_g(VGA_G), .graph_b(VGA_B));
-
-// TODO: state machine for world with clock divider, reseting state, vga and robot
-
-always @(posedge CLOCK_50)
+always @(posedge clock_50)
 begin
     robot_clock <= ~robot_clock;
 end
 
 always @(robot_clock) begin
-    if (robot_clock == 0) // clock will go up
+    if (robot_clock == 1'b0) // clock will go up
         begin
             update_robot_position;
             remove_trash;
@@ -178,11 +162,11 @@ task remove_trash;
 begin
     if (remove == 1)
         begin
-        if (trash_removal_state == 0 || trash_removal_state == 1)
+        if (trash_removal_state == 2'b00 || trash_removal_state == 2'b01)
             trash_removal_state <= trash_removal_state + 1'b1;
         else
             begin
-                trash_removal_state <= 0;
+                trash_removal_state <= 2'b00;
                 case(robot_orientation)
                     north: begin
                         map[get_map_address(robot_row - 1, robot_column)] <= 0;
@@ -207,5 +191,6 @@ begin
     get_map_address = (row * 20) + column;
 end
 endfunction
+
 
 endmodule
