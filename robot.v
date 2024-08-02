@@ -31,8 +31,15 @@ begin
                 remove = 0;
             end
         first_move:
-            casez ({head, left, barrier})
-            3'b1?1:
+            case ({head, left, barrier})
+            3'b101:
+                begin
+                    next_state = stand_by;
+                    front = 0;
+                    turn = 0;
+                    remove = 0;
+                end
+             3'b111:
                 begin
                     next_state = stand_by;
                     front = 0;
@@ -62,8 +69,15 @@ begin
                 end
             endcase
         searching_trash_or_left:
-            casez ({head, left, barrier})
-            3'b1?1:
+            case ({head, left, barrier})
+            3'b101:
+                begin
+                    next_state = stand_by;
+                    front = 0;
+                    turn = 0;
+                    remove = 0;
+                end
+            3'b111:
                 begin
                     next_state = stand_by;
                     front = 0;
@@ -100,8 +114,15 @@ begin
                 end
             endcase
         rotating:
-            casez ({head, left, barrier})
-            3'b1?1:
+            case ({head, left, barrier})
+            3'b101:
+                begin
+                    next_state = stand_by;
+                    front = 0;
+                    turn = 0;
+                    remove = 0;
+                end
+            3'b111:
                 begin
                     next_state = stand_by;
                     front = 0;
@@ -131,22 +152,43 @@ begin
                 end
             endcase
         removing_trash_or_following_left:
-            casez ({head, left, barrier})
-            3'b1?1:
+            case ({head, left, barrier})
+            3'b101:
                 begin
                     next_state = stand_by;
                     front = 0;
                     turn = 0;
                     remove = 0;
                 end
-            3'b0?1:
+            3'b111:
+                begin
+                    next_state = stand_by;
+                    front = 0;
+                    turn = 0;
+                    remove = 0;
+                end
+            3'b001:
                 begin
                     next_state = removing_trash_or_following_left;
                     front = 0;
                     turn = 0;
                     remove = 1;
                 end
-            3'b0?0:
+            3'b011:
+                begin
+                    next_state = removing_trash_or_following_left;
+                    front = 0;
+                    turn = 0;
+                    remove = 1;
+                end
+            3'b000:
+                begin
+                    next_state = searching_trash_or_left;
+                    front = 1;
+                    turn = 0;
+                    remove = 0;
+                end
+            3'b010:
                 begin
                     next_state = searching_trash_or_left;
                     front = 1;
