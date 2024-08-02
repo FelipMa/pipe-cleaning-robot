@@ -12,7 +12,7 @@ parameter WALL_X_L = 30;
 parameter WALL_X_R = 40;
 
 // internal wires
-reg robot_on, free_path_block_on, wall_block_on, trash_1_on, trash_2_on, trash_3_on;
+reg robot_on, free_path_block_on, wall_block_on, black_block_on, trash_1_on, trash_2_on, trash_3_on;
 
 // internal registers
 reg [7:0] r_next, g_next, b_next;
@@ -32,8 +32,8 @@ always @(map_x or map_y) begin // mapa TEMPORÁRIO, não será com ROM no final.
 		4'd5: map_data =  60'o0000_0100_0100_0111_1000;
 		4'd6: map_data =  60'o1111_1100_0411_1100_0000;
 		4'd7: map_data =  60'o1001_1100_0000_1011_1111;
-		4'd8: map_data =  60'o1000_0100_0000_1001_0000;
-		4'd9: map_data =  60'o2001_1111_1101_1511_0000;
+		4'd8: map_data =  60'o2000_0100_0000_1001_0000;
+		4'd9: map_data =  60'o6001_1111_1101_1511_0000;
 		4'd10: map_data = 60'o0000_0000_0000_0000_0000;
 		4'd11: map_data = 60'o0000_0000_0000_0000_0000;
 		4'd12: map_data = 60'o0000_0000_0000_0000_0000;
@@ -43,13 +43,14 @@ always @(map_x or map_y) begin // mapa TEMPORÁRIO, não será com ROM no final.
 	endcase
 
 	case(map_data[map_x +: 3]) // set flags on according to current map position being drawn
-		3'd0: begin wall_block_on = 1'b1; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
-		3'd1: begin wall_block_on = 1'b0; free_path_block_on = 1'b1; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
-		3'd2: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b1; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
-		3'd3: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b1; trash_2_on = 1'b0; trash_3_on = 1'b0; end
-		3'd4: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b1; trash_3_on = 1'b0; end
-		3'd5: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b1; end
-		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
+		3'd0: begin wall_block_on = 1'b1; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; end
+		3'd1: begin wall_block_on = 1'b0; free_path_block_on = 1'b1; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+		3'd2: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b1; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+		3'd3: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b1; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+		3'd4: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b1; trash_3_on = 1'b0; black_block_on = 1'b0;end
+		3'd5: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b1; black_block_on = 1'b0;end
+		3'd6: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b1;end
+		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
 	endcase
 end
 // map x (0:19) and y (0:14) represent the coordinates of the map blocks
@@ -148,6 +149,50 @@ end
 assign wall_block_y = pix_y % 32;
 assign wall_block_x = pix_x % 32; // colors here are represented by 1 bit
 // wall_block __________________________________________________________
+// black_block __________________________________________________________
+wire [4:0] black_block_y, black_block_x;
+reg [0:31] black_block_data;
+always @(black_block_y) begin
+	case(black_block_y)
+		5'd0: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd2: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd3: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd4: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd5: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd6: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd7: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd8: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd9: black_block_data =  32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd10: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd11: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd12: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd13: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd14: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd15: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd16: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd17: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd18: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd19: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd20: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd21: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd22: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd23: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd24: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd25: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd26: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd27: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd28: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd29: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd30: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd31: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		default: black_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+	endcase
+end
+// wall_block y and x go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign black_block_y = pix_y % 32;
+assign black_block_x = pix_x % 32; // colors here are represented by 1 bit
+// black_block __________________________________________________________
 
 // free_path_block ________________________________________________________________
 wire [4:0] free_path_block_y, free_path_block_x;
@@ -338,10 +383,7 @@ assign trash_3_x = (pix_x % 32) * 3; // colors here are represented by 1 bit
 always @* begin
 	if (~video_on) begin
         // emit pink when not in video_on
-		r_next = 8'd255;
-		g_next = 8'd0;
-		b_next = 8'd255;
-		end
+		r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end
 	else if(robot_on) begin
 		case(robot_data[robot_block_x +: 3]) 
             3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
@@ -352,6 +394,18 @@ always @* begin
             3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
             3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
             default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+		endcase
+	end
+	else if(black_block_on) begin
+		case(black_block_data[black_block_x +: 3]) 
+            3'd0: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //grey
+            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
+            3'd2: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //white
+            3'd3: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //grey (darker)
+            3'd4: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //yellow
+            3'd5: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //red
+            3'd6: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //brown
+            default: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end // white
 		endcase
 	end
 	else if(trash_1_on) begin
