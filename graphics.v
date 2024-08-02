@@ -12,7 +12,7 @@ parameter WALL_X_L = 30;
 parameter WALL_X_R = 40;
 
 // internal wires
-reg robot_on, free_path_block_on, wall_block_on;
+reg robot_on, free_path_block_on, wall_block_on, trash_1_on, trash_2_on, trash_3_on;
 
 // internal registers
 reg [7:0] r_next, g_next, b_next;
@@ -22,18 +22,18 @@ reg [7:0] r_next, g_next, b_next;
 wire [3:0] map_y; 
 wire [5:0] map_x;
 reg [0:59] map_data;
-always @(map_x or map_y) begin
+always @(map_x or map_y) begin // mapa TEMPORÁRIO, não será com ROM no final. Apenas para fins de testes iniciais!!!
 	case(map_y)
 		4'd0: map_data =  60'o0000_0000_0111_1110_0000;
 		4'd1: map_data =  60'o0000_0000_0100_0010_0000;
-		4'd2: map_data =  60'o0000_0100_0100_0011_1111;
+		4'd2: map_data =  60'o0000_0100_0300_0011_1111;
 		4'd3: map_data =  60'o0000_0111_1100_0000_0000;
 		4'd4: map_data =  60'o0000_0100_0100_0000_1111;
 		4'd5: map_data =  60'o0000_0100_0100_0111_1000;
-		4'd6: map_data =  60'o1111_1100_0111_1100_0000;
+		4'd6: map_data =  60'o1111_1100_0411_1100_0000;
 		4'd7: map_data =  60'o1001_1100_0000_1011_1111;
 		4'd8: map_data =  60'o1000_0100_0000_1001_0000;
-		4'd9: map_data =  60'o2001_1111_1101_1111_0000;
+		4'd9: map_data =  60'o2001_1111_1101_1511_0000;
 		4'd10: map_data = 60'o0000_0000_0000_0000_0000;
 		4'd11: map_data = 60'o0000_0000_0000_0000_0000;
 		4'd12: map_data = 60'o0000_0000_0000_0000_0000;
@@ -43,10 +43,13 @@ always @(map_x or map_y) begin
 	endcase
 
 	case(map_data[map_x +: 3]) // set flags on according to current map position being drawn
-		3'd0: begin wall_block_on = 1'b1; free_path_block_on = 1'b0; robot_on = 1'b0; end
-		3'd1: begin wall_block_on = 1'b0; free_path_block_on = 1'b1; robot_on = 1'b0; end
-		3'd2: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b1; end
-		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; end
+		3'd0: begin wall_block_on = 1'b1; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
+		3'd1: begin wall_block_on = 1'b0; free_path_block_on = 1'b1; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
+		3'd2: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b1; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
+		3'd3: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b1; trash_2_on = 1'b0; trash_3_on = 1'b0; end
+		3'd4: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b1; trash_3_on = 1'b0; end
+		3'd5: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b1; end
+		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; end
 	endcase
 end
 // map x (0:19) and y (0:14) represent the coordinates of the map blocks
@@ -92,6 +95,7 @@ always @(robot_block_y) begin
 		5'd29: robot_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd30: robot_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd31: robot_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: robot_data = 96'o0000_0000_0000_0000_0000_0000_0000_0000;
 	endcase
 end
 
@@ -137,6 +141,7 @@ always @(wall_block_y) begin
 		5'd29: wall_block_data = 32'b1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd30: wall_block_data = 32'b1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd31: wall_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		default: wall_block_data = 32'b0000_0000_0000_0000_0000_0000_0000_0000;
 	endcase
 end
 // wall_block y and x go from 0 to 31 and represent relative position of the pixel on the 32x32 block
@@ -181,12 +186,154 @@ always @(free_path_block_y) begin
 		5'd29: free_path_block_data = 32'b1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd30: free_path_block_data = 32'b1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd31: free_path_block_data = 32'b1111_1111_1111_1111_1111_1111_1111_1111;
+		default: free_path_block_data = 32'b0000_0000_0000_0000_0000_0000_0000_0000;
 	endcase
 end
 // free_path_block x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
 assign free_path_block_y = pix_y % 32;
 assign free_path_block_x = pix_x % 32; // colors here are represented by 1 bit
 // free_path_block ________________________________________________________________
+// trash_1 ________________________________________________________________________
+wire [4:0] trash_1_y;
+wire [6:0] trash_1_x;
+reg [0:95] trash_1_data;
+always @(trash_1_y) begin
+	case(trash_1_y)
+		5'd0: trash_1_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: trash_1_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd2: trash_1_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd3: trash_1_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd4: trash_1_data =  96'o1000_0000_0000_1100_0000_0000_0000_0001;
+		5'd5: trash_1_data =  96'o1000_0000_0001_3310_0000_0000_0000_0001;
+		5'd6: trash_1_data =  96'o1000_0000_0001_3231_0000_0000_0000_0001;
+		5'd7: trash_1_data =  96'o1000_0000_0001_3221_0000_0000_0000_0001;
+		5'd8: trash_1_data =  96'o1000_0000_0001_2210_0000_0000_0000_0001;
+		5'd9: trash_1_data =  96'o1000_0000_0001_1110_0000_0000_0000_0001;
+		5'd10: trash_1_data = 96'o1000_0000_0112_2221_1000_0000_0000_0001;
+		5'd11: trash_1_data = 96'o1000_0000_1333_3332_2100_0000_0000_0001;
+		5'd12: trash_1_data = 96'o1000_0001_3333_3333_3211_0000_0000_0001;
+		5'd13: trash_1_data = 96'o1000_0013_3333_3333_3322_1000_0000_0001;
+		5'd14: trash_1_data = 96'o1000_0013_3333_3333_3322_2100_0000_0001;
+		5'd15: trash_1_data = 96'o1000_0013_3333_4443_3322_2100_0000_0001;
+		5'd16: trash_1_data = 96'o1000_0133_3333_4443_3322_2210_0000_0001;
+		5'd17: trash_1_data = 96'o1000_0133_3333_4443_3222_2210_0000_0001;
+		5'd18: trash_1_data = 96'o1000_0133_3333_4443_2222_2221_0000_0001;
+		5'd19: trash_1_data = 96'o1000_0133_3333_4442_2222_2221_0000_0001;
+		5'd20: trash_1_data = 96'o1000_1223_3333_4443_3222_2221_0000_0001;
+		5'd21: trash_1_data = 96'o1000_1333_3333_4443_3322_2221_0000_0001;
+		5'd22: trash_1_data = 96'o1000_1333_3333_3333_3322_2221_0000_0001;
+		5'd23: trash_1_data = 96'o1000_1233_3333_3333_3222_2221_0000_0001;
+		5'd24: trash_1_data = 96'o1000_0122_2333_3322_2222_2221_0000_0001;
+		5'd25: trash_1_data = 96'o1000_0012_2222_2222_2222_2210_0000_0001;
+		5'd26: trash_1_data = 96'o1000_0011_2222_2222_2211_1100_0000_0001;
+		5'd27: trash_1_data = 96'o1000_0000_1111_1111_1100_0000_0000_0001;
+		5'd28: trash_1_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd29: trash_1_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd30: trash_1_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd31: trash_1_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: trash_1_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+	endcase
+end
+// trash_1_data x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign trash_1_y = pix_y % 32;
+assign trash_1_x = (pix_x % 32) * 3; // colors here are represented by 1 bit
+
+// trash_1 ________________________________________________________________________
+// trash_2 ________________________________________________________________________
+wire [4:0] trash_2_y;
+wire [6:0] trash_2_x;
+reg [0:95] trash_2_data;
+always @(trash_2_y) begin
+	case(trash_2_y)
+		5'd0: trash_2_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: trash_2_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd2: trash_2_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd3: trash_2_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd4: trash_2_data =  96'o1000_0000_0000_1100_0000_0000_0000_0001;
+		5'd5: trash_2_data =  96'o1000_0000_0001_3310_0000_0000_0000_0001;
+		5'd6: trash_2_data =  96'o1000_0000_0001_3231_0000_0000_0000_0001;
+		5'd7: trash_2_data =  96'o1000_0000_0001_3221_0000_0000_0000_0001;
+		5'd8: trash_2_data =  96'o1000_0000_0001_2210_0000_0000_0000_0001;
+		5'd9: trash_2_data =  96'o1000_0000_0001_1110_0000_0000_0000_0001;
+		5'd10: trash_2_data = 96'o1000_0000_0112_2221_1000_0000_0000_0001;
+		5'd11: trash_2_data = 96'o1000_0000_1333_3332_2100_0000_0000_0001;
+		5'd12: trash_2_data = 96'o1000_0001_3333_3333_3211_0000_0000_0001;
+		5'd13: trash_2_data = 96'o1000_0013_3333_3333_3322_1000_0000_0001;
+		5'd14: trash_2_data = 96'o1000_0013_3333_3333_3322_2100_0000_0001;
+		5'd15: trash_2_data = 96'o1000_0013_3344_4443_3322_2100_0000_0001;
+		5'd16: trash_2_data = 96'o1000_0133_3344_4443_3322_2210_0000_0001;
+		5'd17: trash_2_data = 96'o1000_0133_3333_3443_3222_2210_0000_0001;
+		5'd18: trash_2_data = 96'o1000_0133_3333_3443_2222_2221_0000_0001;
+		5'd19: trash_2_data = 96'o1000_0133_3344_4442_2222_2221_0000_0001;
+		5'd20: trash_2_data = 96'o1000_1223_3344_4443_3222_2221_0000_0001;
+		5'd21: trash_2_data = 96'o1000_1333_3344_3333_3322_2221_0000_0001;
+		5'd22: trash_2_data = 96'o1000_1333_3344_3333_3322_2221_0000_0001;
+		5'd23: trash_2_data = 96'o1000_1233_3344_4443_3222_2221_0000_0001;
+		5'd24: trash_2_data = 96'o1000_0122_2344_4442_2222_2221_0000_0001;
+		5'd25: trash_2_data = 96'o1000_0012_2222_2222_2222_2210_0000_0001;
+		5'd26: trash_2_data = 96'o1000_0011_2222_2222_2211_1100_0000_0001;
+		5'd27: trash_2_data = 96'o1000_0000_1111_1111_1100_0000_0000_0001;
+		5'd28: trash_2_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd29: trash_2_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd30: trash_2_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd31: trash_2_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: trash_2_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+	endcase
+end
+// trash_2_data x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign trash_2_y = pix_y % 32;
+assign trash_2_x = (pix_x % 32) * 3; // colors here are represented by 1 bit
+
+// trash_2 ________________________________________________________________________
+// trash_3 ________________________________________________________________________
+wire [4:0] trash_3_y; 
+wire [6:0] trash_3_x;
+reg [0:95] trash_3_data;
+always @(trash_3_y) begin
+	case(trash_3_y)
+		5'd0: trash_3_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: trash_3_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd2: trash_3_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd3: trash_3_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd4: trash_3_data =  96'o1000_0000_0000_1100_0000_0000_0000_0001;
+		5'd5: trash_3_data =  96'o1000_0000_0001_3310_0000_0000_0000_0001;
+		5'd6: trash_3_data =  96'o1000_0000_0001_3231_0000_0000_0000_0001;
+		5'd7: trash_3_data =  96'o1000_0000_0001_3221_0000_0000_0000_0001;
+		5'd8: trash_3_data =  96'o1000_0000_0001_2210_0000_0000_0000_0001;
+		5'd9: trash_3_data =  96'o1000_0000_0001_1110_0000_0000_0000_0001;
+		5'd10: trash_3_data = 96'o1000_0000_0112_2221_1000_0000_0000_0001;
+		5'd11: trash_3_data = 96'o1000_0000_1333_3332_2100_0000_0000_0001;
+		5'd12: trash_3_data = 96'o1000_0001_3333_3333_3211_0000_0000_0001;
+		5'd13: trash_3_data = 96'o1000_0013_3333_3333_3322_1000_0000_0001;
+		5'd14: trash_3_data = 96'o1000_0013_3333_3333_3322_2100_0000_0001;
+		5'd15: trash_3_data = 96'o1000_0013_3344_4443_3322_2100_0000_0001;
+		5'd16: trash_3_data = 96'o1000_0133_3344_4443_3322_2210_0000_0001;
+		5'd17: trash_3_data = 96'o1000_0133_3333_3443_3222_2210_0000_0001;
+		5'd18: trash_3_data = 96'o1000_0133_3333_3443_2222_2221_0000_0001;
+		5'd19: trash_3_data = 96'o1000_0133_3344_4442_2222_2221_0000_0001;
+		5'd20: trash_3_data = 96'o1000_1223_3344_4443_3222_2221_0000_0001;
+		5'd21: trash_3_data = 96'o1000_1333_3333_3443_3322_2221_0000_0001;
+		5'd22: trash_3_data = 96'o1000_1333_3333_3443_3322_2221_0000_0001;
+		5'd23: trash_3_data = 96'o1000_1233_3344_4443_3222_2221_0000_0001;
+		5'd24: trash_3_data = 96'o1000_0122_2344_4442_2222_2221_0000_0001;
+		5'd25: trash_3_data = 96'o1000_0012_2222_2222_2222_2210_0000_0001;
+		5'd26: trash_3_data = 96'o1000_0011_2222_2222_2211_1100_0000_0001;
+		5'd27: trash_3_data = 96'o1000_0000_1111_1111_1100_0000_0000_0001;
+		5'd28: trash_3_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd29: trash_3_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd30: trash_3_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd31: trash_3_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: trash_3_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+	endcase
+end
+// trash_3_data x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign trash_3_y = pix_y % 32;
+assign trash_3_x = (pix_x % 32) * 3; // colors here are represented by 1 bit
+
+// trash_3 ________________________________________________________________________
+
+
+
 
 always @* begin
 	if (~video_on) begin
@@ -204,6 +351,42 @@ always @* begin
             3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
             3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
             3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
+            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+		endcase
+	end
+	else if(trash_1_on) begin
+		case(trash_1_data[trash_1_x +: 3]) 
+            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
+            3'd2: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
+            3'd3: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd4: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
+            3'd5: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+            3'd6: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+		endcase
+	end
+	else if(trash_2_on) begin
+		case(trash_2_data[trash_2_x +: 3]) 
+            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
+            3'd2: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
+            3'd3: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd4: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
+            3'd5: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+            3'd6: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+		endcase
+	end
+	else if(trash_3_on) begin
+		case(trash_3_data[trash_3_x +: 3]) 
+            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
+            3'd2: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
+            3'd3: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd4: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
+            3'd5: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+            3'd6: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
             default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
 		endcase
 	end
