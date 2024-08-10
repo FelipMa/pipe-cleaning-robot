@@ -222,7 +222,7 @@ end
 
 always @(posedge clock or negedge reset)
 begin
-    if (~reset) begin
+    if (reset == 1'b0) begin
         act_state <= reseting;
     end
     else begin
