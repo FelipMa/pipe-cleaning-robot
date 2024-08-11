@@ -24,6 +24,7 @@ reg [1:260] robot_next_state_string;
 reg [1:2] trash_removal_state;
 
 integer i;
+integer file; // File descriptor
 
 robot DUV (.clock(clock), .reset(reset), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
@@ -31,6 +32,9 @@ always #1 clock = !clock;
 
 initial
 begin
+    // Open file for writing
+    file = $fopen("robot_output.txt", "w");
+
     // WARNING: On tb error, check if map.txt is in the same folder as the testbench
 	$readmemb("map.txt", map);
 	robot_row = {map[0][1], map[0][2]};
@@ -54,28 +58,38 @@ begin
     get_robot_states_strings;
     $display ("Initial state:%s", robot_state_string);
     $display ("Next state:%s\n", robot_next_state_string);
+    
     // sensors are updated instantly when reset
 	for (i = 0; i < n_movements; i = i + 1)
 	begin
 		define_sensors_values;
         get_robot_orientation_string;
         $display ("Time = %0t", $time);
-		$display ("Row = %d | Column =%d | Orientation = %s | Removing trash = %d", robot_row, robot_column, robot_orientation_string, remove);
+		$display ("Row = %d | Column = %d | Orientation = %s | Removing trash = %d", robot_row, robot_column, robot_orientation_string, remove);
 		$display ("Head = %b | Left = %b | Barrier = %b | Under = %b", head, left, barrier, under);
         $display ("Process sensors...");
+        $fwrite(file, "Row = %d | Column = %d | Orientation = %s\n", robot_row, robot_column, robot_orientation_string);
+        $fwrite(file, "Head = %b | Left = %b | Barrier = %b | Under = %b\n", head, left, barrier, under);
+        
         // wait next posedge clock to check robot actions after sensors update
         @ (posedge clock);
         get_robot_states_strings;
         $display ("Actual state:%s", robot_state_string);
         $display ("Next state:%s", robot_next_state_string);
         $display ("Front = %b | Turn = %b | Remove = %b", front, turn, remove);
+        
         update_robot_position;
         remove_trash;
         $display ("\n");
+        $fwrite(file, "\n");
+        
 		if (check_anomalous_situations(0)) $stop;
 	end
 
-	#1 $stop;
+    // Close the file
+	$fclose(file);
+    
+    #1 $stop;
 end
 
 // Input is mandatory in Verilog
@@ -263,5 +277,4 @@ end
 endtask
 
 endmodule
-
 
