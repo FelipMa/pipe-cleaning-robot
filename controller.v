@@ -10,7 +10,7 @@
 // 9 - Start/C
 
 /*
-buttonsIn: Pin DB-9 do controle
+buttonsIn: Pin DB -9 do controle
 buttonsOut: Saída que o módulo top-level vai receber
 */
 
@@ -30,6 +30,21 @@ input wire clk,
 		start_c
 );
 
+wire 	up_z_debounced,
+		down_y_debounced,
+		left_x_debounced,
+		right_debounced,
+		a_b_debounced,
+		selectSignal_debounced,
+		start_c_debounced;
+		
+debouncer db_up_z(.clk(clk), .reset(reset), .noisy(up_z), .debounced(up_z_debounced));
+debouncer db_down_y(.clk(clk), .reset(reset), .noisy(down_y), .debounced(down_y_debounced));
+debouncer db_left_x(.clk(clk), .reset(reset), .noisy(left_x), .debounced(left_x_debounced));
+debouncer db_right(.clk(clk), .reset(reset), .noisy(right), .debounced(right_debounced));
+debouncer db_a_b(.clk(clk), .reset(reset), .noisy(a_b), .debounced(a_b_debounced));
+debouncer db_start_c(.clk(clk), .reset(reset), .noisy(start_c), .debounced(start_c_debounced));
+
 always @(negedge clk) begin
 	if (reset) begin
 		buttonsOut <= 11'b000_000_000_00;
@@ -38,12 +53,12 @@ always @(negedge clk) begin
 	else begin
 		case (selectSignal)
 			1'b0: begin
-				buttonsOut[0] <= up_z; // Up
-				buttonsOut[1] <= down_y; // Down
-				buttonsOut[2] <= left_x; // Left
-				buttonsOut[3] <= right; // Rigth
-				buttonsOut[4] <= a_b; // A
-				buttonsOut[5] <= start_c; // Start
+				buttonsOut[0] <= up_z_debounced; // Up
+				buttonsOut[1] <= down_y_debounced; // Down
+				buttonsOut[2] <= left_x_debounced; // Left
+				buttonsOut[3] <= right_debounced; // Rigth
+				buttonsOut[4] <= a_b_debounced; // A
+				buttonsOut[5] <= start_c_debounced; // Start
 				buttonsOut[6] <= 0; // Z
 				buttonsOut[7] <= 0; // Y
 				buttonsOut[8] <= 0; // X
@@ -58,11 +73,11 @@ always @(negedge clk) begin
 				buttonsOut[3] <= 0; // Rigth
 				buttonsOut[4] <= 0; // A
 				buttonsOut[5] <= 0; // Start
-				buttonsOut[6] <= up_z; // Z
-				buttonsOut[7] <= down_y; // Y
-				buttonsOut[8] <= left_x; // X
-				buttonsOut[9] <= a_b; // B
-				buttonsOut[10] <= start_c; // C
+				buttonsOut[6] <= up_z_debounced; // Z
+				buttonsOut[7] <= down_y_debounced; // Y
+				buttonsOut[8] <= left_x_debounced; // X
+				buttonsOut[9] <= a_b_debounced; // B
+				buttonsOut[10] <= start_c_debounced; // C
 			end
 			
 			default: buttonsOut <= 11'b000_000_000_00;

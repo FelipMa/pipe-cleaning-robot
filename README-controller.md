@@ -20,3 +20,7 @@ Implementar FSM no controle.
 [sega genesis programming part 19: 6 button controllers](https://huguesjohnson.com/programming/genesis/6button/)
 
 [Verilog code for debouncing buttons on FPGA](https://www.fpga4student.com/2017/04/simple-debouncing-verilog-code-for.html)
+
+[How to eliminate button bounces with digital logic](http://zipcpu.com/blog/2017/08/04/debouncing.html)
+
+[Debouncer 2 - The solution](https://www.fpga4fun.com/Debouncer2.html)
