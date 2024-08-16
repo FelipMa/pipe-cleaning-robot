@@ -1,6 +1,7 @@
-module graphics (clock_50, video_on, pix_x, pix_y, graph_r, graph_g, graph_b);
+module graphics (clock_50, video_on, pix_x, pix_y, graph_r, graph_g, graph_b, sprite);
 input wire clock_50, video_on;
 input wire [9:0] pix_x, pix_y;
+input wire [3:0] sprite; //hexadecimal code of the current sprite
 output reg [7:0] graph_r, graph_g, graph_b;
 
 // posições máximas dos pixels do display de gráfico
@@ -12,97 +13,252 @@ parameter WALL_X_L = 30;
 parameter WALL_X_R = 40;
 
 // internal wires
-reg robot_on, free_path_block_on, wall_block_on, black_block_on, trash_1_on, trash_2_on, trash_3_on;
-
+reg robot_north_on, free_path_block_on, wall_block_on, black_block_on, trash_1_on, trash_2_on, trash_3_on, robot_south_on, robot_east_on, robot_west_on;
+// 20x15 sprites map
 // internal registers
 reg [7:0] r_next, g_next, b_next;
 
 // assignments
 // map __________________________________________________________________
-wire [3:0] map_y; 
-wire [5:0] map_x;
-reg [0:59] map_data;
-always @(map_x or map_y) begin // mapa TEMPORÁRIO, não será com ROM no final. Apenas para fins de testes iniciais!!!
-	case(map_y)
-		4'd0: map_data =  60'o0000_0000_0111_1110_0000;
-		4'd1: map_data =  60'o0000_0000_0100_0010_0000;
-		4'd2: map_data =  60'o0000_0100_0300_0011_1111;
-		4'd3: map_data =  60'o0000_0111_1100_0000_0000;
-		4'd4: map_data =  60'o0000_0100_0100_0000_1111;
-		4'd5: map_data =  60'o0000_0100_0100_0111_1000;
-		4'd6: map_data =  60'o1111_1100_0411_1100_0000;
-		4'd7: map_data =  60'o1001_1100_0000_1011_1111;
-		4'd8: map_data =  60'o2000_0100_0000_1001_0000;
-		4'd9: map_data =  60'o6001_1111_1101_1511_0000;
-		4'd10: map_data = 60'o0000_0000_0000_0000_0000;
-		4'd11: map_data = 60'o0000_0000_0000_0000_0000;
-		4'd12: map_data = 60'o0000_0000_0000_0000_0000;
-		4'd13: map_data = 60'o0000_0000_0000_0000_0000;
-		4'd14: map_data = 60'o0000_0000_0000_0000_0000;
-		default: map_data = 60'o0000_0000_0000_0000_0000;
-	endcase
-
-	case(map_data[map_x +: 3]) // set flags on according to current map position being drawn
-		3'd0: begin wall_block_on = 1'b1; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; end
-		3'd1: begin wall_block_on = 1'b0; free_path_block_on = 1'b1; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
-		3'd2: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b1; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
-		3'd3: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b1; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
-		3'd4: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b1; trash_3_on = 1'b0; black_block_on = 1'b0;end
-		3'd5: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b1; black_block_on = 1'b0;end
-		3'd6: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b1;end
-		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+//wire [3:0] map_y; 
+//wire [5:0] map_x;
+//reg [0:59] map_data;
+//always @(map_x or map_y) begin // mapa TEMPORÁRIO, não será com ROM no final. Apenas para fins de testes iniciais!!!
+//	case(map_y)
+//		4'd0: map_data =  60'o0000_0000_0111_1110_0000;
+//		4'd1: map_data =  60'o0000_0000_0100_0010_0000;
+//		4'd2: map_data =  60'o0000_0100_0300_0011_1111;
+//		4'd3: map_data =  60'o0000_0111_1100_0000_0000;
+//		4'd4: map_data =  60'o0000_0100_0100_0000_1111;
+//		4'd5: map_data =  60'o0000_0100_0100_0111_1000;
+//		4'd6: map_data =  60'o1111_1100_0411_1100_0000;
+//		4'd7: map_data =  60'o1001_1100_0000_1011_1111;
+//		4'd8: map_data =  60'o2000_0100_0000_1001_0000;
+//		4'd9: map_data =  60'o6001_1111_1101_1511_0000;
+//		4'd10: map_data = 60'o0000_0000_0000_0000_0000;
+//		4'd11: map_data = 60'o0000_0000_0000_0000_0000;
+//		4'd12: map_data = 60'o0000_0000_0000_0000_0000;
+//		4'd13: map_data = 60'o0000_0000_0000_0000_0000;
+//		4'd14: map_data = 60'o0000_0000_0000_0000_0000;
+//		default: map_data = 60'o0000_0000_0000_0000_0000;
+//	endcase
+//
+//always @* begin
+//	case(map_data[map_x +: 3]) // Set the flags according to the current map position being drawn. Map_x is set accordingly to the current pixel.
+//		3'd0: begin wall_block_on = 1'b1; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; end
+//		3'd1: begin wall_block_on = 1'b0; free_path_block_on = 1'b1; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+//		3'd2: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b1; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+//		3'd3: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b1; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+//		3'd4: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b1; trash_3_on = 1'b0; black_block_on = 1'b0;end
+//		3'd5: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b1; black_block_on = 1'b0;end
+//		3'd6: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b1;end
+//		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0;end
+//	endcase
+//end
+//// map x (0:19) and y (0:14) represent the coordinates of the map blocks
+//assign map_y = pix_y / 32;
+//assign map_x = (pix_x / 32) * 3; // (*3 is because each block is represented by 3 bits)
+// map __________________________________________________________________
+always @* begin
+	case(sprite) // Set the flags according to the current map position being drawn. Map_x is set accordingly to the current pixel.
+		4'd0: begin wall_block_on = 1'b1; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b0; end //wall
+		4'd1: begin wall_block_on = 1'b0; free_path_block_on = 1'b1; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b0; end //free path
+		4'd2: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b1; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b0; end //robot_north
+		4'd3: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b1; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b0; end //trash 1
+		4'd4: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b1; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b0; end //trash 2
+		4'd5: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b1; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b0; end //trash 3
+		4'd6: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b1; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b0; end //black_block
+		4'd7: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b1; robot_east_on = 1'b0; robot_west_on = 1'b0; end //robot_south 
+		4'd8: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b1; robot_west_on = 1'b0; end //robot_east
+		4'd9: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b1; end //robot_west
+		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on =1'b0; robot_west_on = 1'b0; end //nothing
 	endcase
 end
-// map x (0:19) and y (0:14) represent the coordinates of the map blocks
-assign map_y = pix_y / 32;
-assign map_x = (pix_x / 32) * 3; // (*3 is because each block is represented by 3 bits)
-// map __________________________________________________________________
 
-// robot ________________________________________________________________
-reg [0:95] robot_data;
-wire [4:0] robot_block_y;
-wire [6:0] robot_block_x;
-always @(robot_block_y) begin
-	case(robot_block_y) // ROM memory of Wall-e pixels
-		5'd0: robot_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
-		5'd1: robot_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
-		5'd2: robot_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
-		5'd3: robot_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
-		5'd4: robot_data =  96'o1000_0000_0000_0100_0001_0000_0000_0001;
-		5'd5: robot_data =  96'o1000_0000_0000_1110_0011_1000_0000_0001;
-		5'd6: robot_data =  96'o1000_0000_0001_1211_1112_1100_0000_0001;
-		5'd7: robot_data =  96'o1000_0000_0011_2221_1122_2110_0000_0001;
-		5'd8: robot_data =  96'o1000_0000_0112_2221_1122_2211_0000_0001;
-		5'd9: robot_data =  96'o1000_0000_1122_1122_1221_1221_1000_0001;
-		5'd10: robot_data = 96'o1000_0001_1221_3212_1212_3122_1100_0001;
-		5'd11: robot_data = 96'o1000_0011_2221_3312_1213_3122_2110_0001;
-		5'd12: robot_data = 96'o1000_0012_2222_1122_1221_1222_2210_0001;
-		5'd13: robot_data = 96'o1000_0012_2222_2221_6122_2222_2210_0001;
-		5'd14: robot_data = 96'o1000_0012_2222_2221_6122_2222_2210_0001;
-		5'd15: robot_data = 96'o1000_0001_2222_2211_6112_2222_2100_0001;
-		5'd16: robot_data = 96'o1000_0000_1111_1111_6111_1111_1000_0001;
-		5'd17: robot_data = 96'o1000_0000_0000_0001_6100_0000_0000_0001;
-		5'd18: robot_data = 96'o1000_0000_0006_6666_6666_6600_0000_0001;
-		5'd19: robot_data = 96'o1000_0000_6666_3333_3333_3666_6000_0001;
-		5'd20: robot_data = 96'o1000_0000_6336_6666_6666_6633_6000_0001;
-		5'd21: robot_data = 96'o1000_0000_6334_4111_1111_4433_6000_0001;
-		5'd22: robot_data = 96'o1000_0000_6364_4144_4441_4463_6000_0001;
-		5'd23: robot_data = 96'o1000_0000_0664_4144_4441_4466_0000_0001;
-		5'd24: robot_data = 96'o1000_0000_0114_4144_4551_4411_0000_0001;
-		5'd25: robot_data = 96'o1000_0000_0114_4444_4554_4411_0000_0001;
-		5'd26: robot_data = 96'o1000_0000_0111_1100_0001_1111_0000_0001;
-		5'd27: robot_data = 96'o1000_0000_0111_1100_0001_1111_0000_0001;
-		5'd28: robot_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
-		5'd29: robot_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
-		5'd30: robot_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
-		5'd31: robot_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
-		default: robot_data = 96'o0000_0000_0000_0000_0000_0000_0000_0000;
+// robot_north ________________________________________________________________
+reg [0:95] robot_north_data;
+wire [4:0] robot_north_block_y;
+wire [6:0] robot_north_block_x;
+always @(robot_north_block_y) begin
+	case(robot_north_block_y) // ROM memory of Wall-e pixels
+		5'd0: robot_north_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: robot_north_data =  96'o1555_5555_5555_5555_5555_5555_5555_5551;
+		5'd2: robot_north_data =  96'o1555_5555_5555_5555_5555_5555_5555_5551;
+		5'd3: robot_north_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd4: robot_north_data =  96'o1000_0000_0000_0100_0001_0000_0000_0001;
+		5'd5: robot_north_data =  96'o1000_0000_0000_1110_0011_1000_0000_0001;
+		5'd6: robot_north_data =  96'o1000_0000_0001_1211_1112_1100_0000_0001;
+		5'd7: robot_north_data =  96'o1000_0000_0011_2221_1122_2110_0000_0001;
+		5'd8: robot_north_data =  96'o1000_0000_0112_2221_1122_2211_0000_0001;
+		5'd9: robot_north_data =  96'o1000_0000_1122_1122_1221_1221_1000_0001;
+		5'd10: robot_north_data = 96'o1000_0001_1221_3212_1212_3122_1100_0001;
+		5'd11: robot_north_data = 96'o1000_0011_2221_3312_1213_3122_2110_0001;
+		5'd12: robot_north_data = 96'o1000_0012_2222_1122_1221_1222_2210_0001;
+		5'd13: robot_north_data = 96'o1000_0012_2222_2221_6122_2222_2210_0001;
+		5'd14: robot_north_data = 96'o1000_0012_2222_2221_6122_2222_2210_0001;
+		5'd15: robot_north_data = 96'o1000_0001_2222_2211_6112_2222_2100_0001;
+		5'd16: robot_north_data = 96'o1000_0000_1111_1111_6111_1111_1000_0001;
+		5'd17: robot_north_data = 96'o1000_0000_0000_0001_6100_0000_0000_0001;
+		5'd18: robot_north_data = 96'o1000_0000_0006_6666_6666_6600_0000_0001;
+		5'd19: robot_north_data = 96'o1000_0000_6666_3333_3333_3666_6000_0001;
+		5'd20: robot_north_data = 96'o1000_0000_6336_6666_6666_6633_6000_0001;
+		5'd21: robot_north_data = 96'o1000_0000_6334_4111_1111_4433_6000_0001;
+		5'd22: robot_north_data = 96'o1000_0000_6364_4144_4441_4463_6000_0001;
+		5'd23: robot_north_data = 96'o1000_0000_0664_4144_4441_4466_0000_0001;
+		5'd24: robot_north_data = 96'o1000_0000_0114_4144_4551_4411_0000_0001;
+		5'd25: robot_north_data = 96'o1000_0000_0114_4444_4554_4411_0000_0001;
+		5'd26: robot_north_data = 96'o1000_0000_0111_1100_0001_1111_0000_0001;
+		5'd27: robot_north_data = 96'o1000_0000_0111_1100_0001_1111_0000_0001;
+		5'd28: robot_north_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd29: robot_north_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd30: robot_north_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd31: robot_north_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: robot_north_data = 96'o0000_0000_0000_0000_0000_0000_0000_0000;
 	endcase
 end
 
 // robot x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
-assign robot_block_y = pix_y % 32;
-assign robot_block_x = (pix_x % 32) * 3; // (*3 is because each color is represented by 3 bits)
+assign robot_north_block_y = pix_y % 32;
+assign robot_north_block_x = (pix_x % 32) * 3; // (*3 is because each color is represented by 3 bits)
+// robot_north ________________________________________________________________
+// robot_south ________________________________________________________________
+reg [0:95] robot_south_data;
+wire [4:0] robot_south_block_y;
+wire [6:0] robot_south_block_x;
+always @(robot_south_block_y) begin
+	case(robot_south_block_y) // ROM memory of Wall-e pixels
+		5'd0: robot_south_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: robot_south_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd2: robot_south_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd3: robot_south_data =  96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd4: robot_south_data =  96'o1000_0000_0000_0100_0001_0000_0000_0001;
+		5'd5: robot_south_data =  96'o1000_0000_0000_1110_0011_1000_0000_0001;
+		5'd6: robot_south_data =  96'o1000_0000_0001_1211_1112_1100_0000_0001;
+		5'd7: robot_south_data =  96'o1000_0000_0011_2221_1122_2110_0000_0001;
+		5'd8: robot_south_data =  96'o1000_0000_0112_2221_1122_2211_0000_0001;
+		5'd9: robot_south_data =  96'o1000_0000_1122_1122_1221_1221_1000_0001;
+		5'd10: robot_south_data = 96'o1000_0001_1221_3212_1212_3122_1100_0001;
+		5'd11: robot_south_data = 96'o1000_0011_2221_3312_1213_3122_2110_0001;
+		5'd12: robot_south_data = 96'o1000_0012_2222_1122_1221_1222_2210_0001;
+		5'd13: robot_south_data = 96'o1000_0012_2222_2221_6122_2222_2210_0001;
+		5'd14: robot_south_data = 96'o1000_0012_2222_2221_6122_2222_2210_0001;
+		5'd15: robot_south_data = 96'o1000_0001_2222_2211_6112_2222_2100_0001;
+		5'd16: robot_south_data = 96'o1000_0000_1111_1111_6111_1111_1000_0001;
+		5'd17: robot_south_data = 96'o1000_0000_0000_0001_6100_0000_0000_0001;
+		5'd18: robot_south_data = 96'o1000_0000_0006_6666_6666_6600_0000_0001;
+		5'd19: robot_south_data = 96'o1000_0000_6666_3333_3333_3666_6000_0001;
+		5'd20: robot_south_data = 96'o1000_0000_6336_6666_6666_6633_6000_0001;
+		5'd21: robot_south_data = 96'o1000_0000_6334_4111_1111_4433_6000_0001;
+		5'd22: robot_south_data = 96'o1000_0000_6364_4144_4441_4463_6000_0001;
+		5'd23: robot_south_data = 96'o1000_0000_0664_4144_4441_4466_0000_0001;
+		5'd24: robot_south_data = 96'o1000_0000_0114_4144_4551_4411_0000_0001;
+		5'd25: robot_south_data = 96'o1000_0000_0114_4444_4554_4411_0000_0001;
+		5'd26: robot_south_data = 96'o1000_0000_0111_1100_0001_1111_0000_0001;
+		5'd27: robot_south_data = 96'o1000_0000_0111_1100_0001_1111_0000_0001;
+		5'd28: robot_south_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
+		5'd29: robot_south_data = 96'o1555_5555_5555_5555_5555_5555_5555_5551;
+		5'd30: robot_south_data = 96'o1555_5555_5555_5555_5555_5555_5555_5551;
+		5'd31: robot_south_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: robot_south_data = 96'o0000_0000_0000_0000_0000_0000_0000_0000;
+	endcase
+end
+
+// robot x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign robot_south_block_y = pix_y % 32;
+assign robot_south_block_x = (pix_x % 32) * 3; // (*3 is because each color is represented by 3 bits)
+// robot ________________________________________________________________
+// robot ________________________________________________________________
+reg [0:95] robot_east_data;
+wire [4:0] robot_east_block_y;
+wire [6:0] robot_east_block_x;
+always @(robot_east_block_y) begin
+	case(robot_east_block_y) // ROM memory of Wall-e pixels
+		5'd0: robot_east_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: robot_east_data =  96'o1000_0000_0000_0000_0000_0000_0000_0551;
+		5'd2: robot_east_data =  96'o1000_0000_0000_0000_0000_0000_0000_0551;
+		5'd3: robot_east_data =  96'o1000_0000_0000_0000_0000_0000_0000_0551;
+		5'd4: robot_east_data =  96'o1000_0000_0000_0100_0001_0000_0000_0551;
+		5'd5: robot_east_data =  96'o1000_0000_0000_1110_0011_1000_0000_0551;
+		5'd6: robot_east_data =  96'o1000_0000_0001_1211_1112_1100_0000_0551;
+		5'd7: robot_east_data =  96'o1000_0000_0011_2221_1122_2110_0000_0551;
+		5'd8: robot_east_data =  96'o1000_0000_0112_2221_1122_2211_0000_0551;
+		5'd9: robot_east_data =  96'o1000_0000_1122_1122_1221_1221_1000_0551;
+		5'd10: robot_east_data = 96'o1000_0001_1221_3212_1212_3122_1100_0551;
+		5'd11: robot_east_data = 96'o1000_0011_2221_3312_1213_3122_2110_0551;
+		5'd12: robot_east_data = 96'o1000_0012_2222_1122_1221_1222_2210_0551;
+		5'd13: robot_east_data = 96'o1000_0012_2222_2221_6122_2222_2210_0551;
+		5'd14: robot_east_data = 96'o1000_0012_2222_2221_6122_2222_2210_0551;
+		5'd15: robot_east_data = 96'o1000_0001_2222_2211_6112_2222_2100_0551;
+		5'd16: robot_east_data = 96'o1000_0000_1111_1111_6111_1111_1000_0551;
+		5'd17: robot_east_data = 96'o1000_0000_0000_0001_6100_0000_0000_0551;
+		5'd18: robot_east_data = 96'o1000_0000_0006_6666_6666_6600_0000_0551;
+		5'd19: robot_east_data = 96'o1000_0000_6666_3333_3333_3666_6000_0551;
+		5'd20: robot_east_data = 96'o1000_0000_6336_6666_6666_6633_6000_0551;
+		5'd21: robot_east_data = 96'o1000_0000_6334_4111_1111_4433_6000_0551;
+		5'd22: robot_east_data = 96'o1000_0000_6364_4144_4441_4463_6000_0551;
+		5'd23: robot_east_data = 96'o1000_0000_0664_4144_4441_4466_0000_0551;
+		5'd24: robot_east_data = 96'o1000_0000_0114_4144_4551_4411_0000_0551;
+		5'd25: robot_east_data = 96'o1000_0000_0114_4444_4554_4411_0000_0551;
+		5'd26: robot_east_data = 96'o1000_0000_0111_1100_0001_1111_0000_0551;
+		5'd27: robot_east_data = 96'o1000_0000_0111_1100_0001_1111_0000_0551;
+		5'd28: robot_east_data = 96'o1000_0000_0000_0000_0000_0000_0000_0551;
+		5'd29: robot_east_data = 96'o1000_0000_0000_0000_0000_0000_0000_0551;
+		5'd30: robot_east_data = 96'o1000_0000_0000_0000_0000_0000_0000_0551;
+		5'd31: robot_east_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: robot_east_data = 96'o0000_0000_0000_0000_0000_0000_0000_0000;
+	endcase
+end
+
+// robot x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign robot_east_block_y = pix_y % 32;
+assign robot_east_block_x = (pix_x % 32) * 3; // (*3 is because each color is represented by 3 bits)
+// robot ________________________________________________________________
+
+// robot ________________________________________________________________
+reg [0:95] robot_west_data;
+wire [4:0] robot_west_block_y;
+wire [6:0] robot_west_block_x;
+always @(robot_west_block_y) begin
+	case(robot_west_block_y) // ROM memory of Wall-e pixels
+		5'd0: robot_west_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: robot_west_data =  96'o1550_0000_0000_0000_0000_0000_0000_0001;
+		5'd2: robot_west_data =  96'o1550_0000_0000_0000_0000_0000_0000_0001;
+		5'd3: robot_west_data =  96'o1550_0000_0000_0000_0000_0000_0000_0001;
+		5'd4: robot_west_data =  96'o1550_0000_0000_0100_0001_0000_0000_0001;
+		5'd5: robot_west_data =  96'o1550_0000_0000_1110_0011_1000_0000_0001;
+		5'd6: robot_west_data =  96'o1550_0000_0001_1211_1112_1100_0000_0001;
+		5'd7: robot_west_data =  96'o1550_0000_0011_2221_1122_2110_0000_0001;
+		5'd8: robot_west_data =  96'o1550_0000_0112_2221_1122_2211_0000_0001;
+		5'd9: robot_west_data =  96'o1550_0000_1122_1122_1221_1221_1000_0001;
+		5'd10: robot_west_data = 96'o1550_0001_1221_3212_1212_3122_1100_0001;
+		5'd11: robot_west_data = 96'o1550_0011_2221_3312_1213_3122_2110_0001;
+		5'd12: robot_west_data = 96'o1550_0012_2222_1122_1221_1222_2210_0001;
+		5'd13: robot_west_data = 96'o1550_0012_2222_2221_6122_2222_2210_0001;
+		5'd14: robot_west_data = 96'o1550_0012_2222_2221_6122_2222_2210_0001;
+		5'd15: robot_west_data = 96'o1550_0001_2222_2211_6112_2222_2100_0001;
+		5'd16: robot_west_data = 96'o1550_0000_1111_1111_6111_1111_1000_0001;
+		5'd17: robot_west_data = 96'o1550_0000_0000_0001_6100_0000_0000_0001;
+		5'd18: robot_west_data = 96'o1550_0000_0006_6666_6666_6600_0000_0001;
+		5'd19: robot_west_data = 96'o1550_0000_6666_3333_3333_3666_6000_0001;
+		5'd20: robot_west_data = 96'o1550_0000_6336_6666_6666_6633_6000_0001;
+		5'd21: robot_west_data = 96'o1550_0000_6334_4111_1111_4433_6000_0001;
+		5'd22: robot_west_data = 96'o1550_0000_6364_4144_4441_4463_6000_0001;
+		5'd23: robot_west_data = 96'o1550_0000_0664_4144_4441_4466_0000_0001;
+		5'd24: robot_west_data = 96'o1550_0000_0114_4144_4551_4411_0000_0001;
+		5'd25: robot_west_data = 96'o1550_0000_0114_4444_4554_4411_0000_0001;
+		5'd26: robot_west_data = 96'o1550_0000_0111_1100_0001_1111_0000_0001;
+		5'd27: robot_west_data = 96'o1550_0000_0111_1100_0001_1111_0000_0001;
+		5'd28: robot_west_data = 96'o1550_0000_0000_0000_0000_0000_0000_0001;
+		5'd29: robot_west_data = 96'o1550_0000_0000_0000_0000_0000_0000_0001;
+		5'd30: robot_west_data = 96'o1550_0000_0000_0000_0000_0000_0000_0001;
+		5'd31: robot_west_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: robot_west_data = 96'o0000_0000_0000_0000_0000_0000_0000_0000;
+	endcase
+end
+
+// robot x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign robot_west_block_y = pix_y % 32;
+assign robot_west_block_x = (pix_x % 32) * 3; // (*3 is because each color is represented by 3 bits)
 // robot ________________________________________________________________
 
 // wall_block __________________________________________________________
@@ -384,8 +540,8 @@ always @* begin
 	if (~video_on) begin
         // emit pink when not in video_on
 		r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end
-	else if(robot_on) begin
-		case(robot_data[robot_block_x +: 3]) 
+	else if(robot_north_on) begin
+		case(robot_north_data[robot_north_block_x +: 3]) 
             3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
             3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
             3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
