@@ -1,6 +1,8 @@
-module world(clock_50, reset_key, mode_toggle, clock_toggle, mode);
+module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite);
 input wire clock_50, reset_key, mode_toggle, clock_toggle;
 output reg mode;
+input wire [9:0] pixel_x, pixel_y; 
+output reg [3:0] sprite;
 
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
 
@@ -10,11 +12,10 @@ reg head, left, under, barrier; // Inputs for robot
 reg [1:6] robot_row, robot_column;
 reg [1:3] robot_orientation;
 reg [1:0] trash_removal_state;
-
 // map is a 11x20 matrix, but only 10x20 is used (first line is used for robot initial data)
 // each cell is 3 bits long
 // memory must be linear, so every row is concatenated
-reg [1:3] map [1:220];
+reg [1:4] map [1:320];
 
 reg next_mode, next_robot_clock;
 reg [1:0] next_trash_removal_state;
@@ -31,7 +32,42 @@ initial begin
 	robot_column = {map[3], map[4]};
 	robot_orientation = map[5];
 end
+///////////////////////////////////
+wire [6:0] sprite_x;
+wire [3:0] sprite_y;
+wire [3:0] map_coding;
 
+
+assign sprite_x = (pixel_x / 32) * 4;
+assign sprite_y = (pixel_y / 32);
+assign map_coding = map[sprite_x][sprite_y];
+always @(map_coding) begin
+	if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin
+		case(robot_orientation)
+			4'b0000: sprite = 4'd2;
+			4'b0001: sprite = 4'd7;
+			4'b0010: sprite = 4'd8;
+			4'b0011: sprite = 4'd9;
+			default: sprite = 4'd2;
+		endcase
+	end
+//	else begin
+//		case(map_coding)
+//			4'b0000: sprite = 4'd1;    talvez não seja necessário 
+//			4'b0001: sprite = 4'd0;
+//			4'b0010: sprite = 4'd0;
+//			4'b0111: sprite = 4'd6;
+//		endcase
+//	end
+	else begin
+		sprite = map_coding;
+	end
+end
+
+///////////////////////////////////
+
+
+///////////////////////////////////
 // build robot
 robot robot (.clock(robot_clock), .reset(reset_key), .head(head), .left(left), .under(under), .barrier(barrier), .front(front), .turn(turn), .remove(remove));
 
