@@ -22,8 +22,8 @@ def transform_map():
         asd = file.read()
     lines = asd.splitlines()
 
-    # Filter lines that do not start with "//"
-    filtered_lines = [line for line in lines if not line.startswith("//")]
+    # Skip the first line and filter lines that do not start with "//"
+    filtered_lines = [line for line in lines[1:] if not line.startswith("//")]
 
     # Rejoin the filtered lines into a single string
     binary_string = "\n".join(filtered_lines)
