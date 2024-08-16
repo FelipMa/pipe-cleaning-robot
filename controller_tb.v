@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
 module controller_tb;
-reg clk, reset, up_z, down_y, left_x, right,	a_b, selectSignal, start_c;
+reg clock_50, reset_key, up_z, down_y, left_x, right,	a_b, selectSignal, start_c;
 wire [10:0] buttonsOut;
 
-controller DUT(.clk(clk), 
-					.reset(reset), 
+controller DUT(.clock_50(clock_50), 
+					.reset_key(reset_key), 
 					.up_z(up_z),
 					.down_y(down_y),
 					.left_x(left_x),
@@ -16,12 +16,12 @@ controller DUT(.clk(clk),
 					.buttonsOut(buttonsOut));
 					
 always begin
-	#10 clk = ~clk; 
+	#10 clock_50 = ~clock_50; 
 end
 
 initial begin
-	clk = 0;
-	reset = 0;
+	clock_50 = 0;
+	reset_key = 0;
 	up_z = 0;
 	down_y = 0;
 	left_x = 0;
@@ -30,7 +30,7 @@ initial begin
 	selectSignal = 0;
 	start_c = 0;
 	
-	#20 reset = 1;
+	#20 reset_key = 1;
 
 	#10 right = 1;
 	#10 right = 0;

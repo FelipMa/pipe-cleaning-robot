@@ -19,8 +19,8 @@ module controller (
 output reg [10:0] buttonsOut,
 
 //buttonsIn
-input wire clk,
-		reset,
+input wire clock_50,
+		reset_key,
 		up_z,
 		down_y,
 		left_x,
@@ -45,15 +45,15 @@ reg 	prev_up_z_debounced,
 		prev_a_b_debounced,
 		prev_start_c_debounced;
 		
-debouncer db_up_z(.clk(clk), .reset(reset), .noisy(up_z), .debounced(up_z_debounced));
-debouncer db_down_y(.clk(clk), .reset(reset), .noisy(down_y), .debounced(down_y_debounced));
-debouncer db_left_x(.clk(clk), .reset(reset), .noisy(left_x), .debounced(left_x_debounced));
-debouncer db_right(.clk(clk), .reset(reset), .noisy(right), .debounced(right_debounced));
-debouncer db_a_b(.clk(clk), .reset(reset), .noisy(a_b), .debounced(a_b_debounced));
-debouncer db_start_c(.clk(clk), .reset(reset), .noisy(start_c), .debounced(start_c_debounced));
+debouncer db_up_z(.clock_50(clock_50), .reset_key(reset_key), .noisy(up_z), .debounced(up_z_debounced));
+debouncer db_down_y(.clock_50(clock_50), .reset_key(reset_key), .noisy(down_y), .debounced(down_y_debounced));
+debouncer db_left_x(.clock_50(clock_50), .reset_key(reset_key), .noisy(left_x), .debounced(left_x_debounced));
+debouncer db_right(.clock_50(clock_50), .reset_key(reset_key), .noisy(right), .debounced(right_debounced));
+debouncer db_a_b(.clock_50(clock_50), .reset_key(reset_key), .noisy(a_b), .debounced(a_b_debounced));
+debouncer db_start_c(.clock_50(clock_50), .reset_key(reset_key), .noisy(start_c), .debounced(start_c_debounced));
 
-always @(posedge clk) begin
-	if (!reset) begin
+always @(posedge clock_50) begin
+	if (!reset_key) begin
 		buttonsOut <= 11'b000_000_000_00;
 		prev_up_z_debounced <= 1'b0;
 		prev_down_y_debounced <= 1'b0;
