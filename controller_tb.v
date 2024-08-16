@@ -21,7 +21,7 @@ end
 
 initial begin
 	clk = 0;
-	reset = 1;
+	reset = 0;
 	up_z = 0;
 	down_y = 0;
 	left_x = 0;
@@ -30,21 +30,25 @@ initial begin
 	selectSignal = 0;
 	start_c = 0;
 	
-	#20 reset = 0;
+	#20 reset = 1;
 
-	#10 up_z = 1;
-	#10 up_z = 0;
-	#10 up_z = 1;
+	#10 right = 1;
+	#10 right = 0;
+	#10 right = 1;
 
-	#20972000
+	// #20972000
 
-	$display ("buttonsOut: %0b", buttonsOut);
+	while(buttonsOut[3] == 1'b0) begin
+		#10;
+	end
 
-	selectSignal = 1;
+	$display ("Time: %t, buttonsOut: %b", $realtime, buttonsOut);
 
-	#20972000
-	
-	$display ("buttonsOut: %0b", buttonsOut);
+	//selectSignal = 1;
+
+	#20 $display ("Time: %t, buttonsOut: %b", $realtime, buttonsOut);
+
+	// #20972000
 
 	$finish;
 end
