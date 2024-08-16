@@ -10,7 +10,7 @@
 // 9 - Start/C
 
 /*
-buttonsIn: Pin DB -9 do controle
+buttonsIn: Pin DB-9 do controle
 buttonsOut: Saída que o módulo top-level vai receber
 */
 
@@ -45,9 +45,14 @@ debouncer db_right(.clk(clk), .reset(reset), .noisy(right), .debounced(right_deb
 debouncer db_a_b(.clk(clk), .reset(reset), .noisy(a_b), .debounced(a_b_debounced));
 debouncer db_start_c(.clk(clk), .reset(reset), .noisy(start_c), .debounced(start_c_debounced));
 
+//reg prev_selectSignal;
+//reg [23:0] counter_selectSignal;
+
 always @(negedge clk) begin
-	if (reset) begin
+	if (!reset) begin
 		buttonsOut <= 11'b000_000_000_00;
+		//prev_selectSignal <= 1'b0;
+		//counter_selectSignal <= 24'b0;
 	end
 	
 	else begin
@@ -64,6 +69,7 @@ always @(negedge clk) begin
 				buttonsOut[8] <= 0; // X
 				buttonsOut[9] <= 0; // B
 				buttonsOut[10] <= 0; // C
+				
 			end
 			
 			1'b1: begin
