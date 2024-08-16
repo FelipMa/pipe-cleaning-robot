@@ -48,7 +48,7 @@ debouncer db_start_c(.clk(clk), .reset(reset), .noisy(start_c), .debounced(start
 //reg prev_selectSignal;
 //reg [23:0] counter_selectSignal;
 
-always @(negedge clk) begin
+always @(posedge clk) begin
 	if (!reset) begin
 		buttonsOut <= 11'b000_000_000_00;
 		//prev_selectSignal <= 1'b0;
