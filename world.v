@@ -38,11 +38,12 @@ wire [3:0] sprite_y;
 wire [3:0] map_coding;
 
 
-assign sprite_x = (pixel_x / 32) * 4;
+assign sprite_x = (pixel_x / 32);
 assign sprite_y = (pixel_y / 32);
-assign map_coding = map[sprite_x][sprite_y];
-always @(map_coding) begin
-	if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin
+assign map_coding = map[sprite_y*20 + sprite_x + 1 + 20];
+always @(posedge clock_50 or negedge reset_key) begin
+	if (!reset_key) sprite = map_coding;
+	else if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin
 		case(robot_orientation)
 			4'b0000: sprite = 4'd2;
 			4'b0001: sprite = 4'd7;
