@@ -2,12 +2,13 @@
 
 module world_tb;
 
-parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
+parameter north = 4'b0000, south = 4'b0001, east = 4'b0010, west = 4'b0011;
 
 reg clock, reset_key, mode_toggle, clock_toggle;
 reg start = 1'b0;
 
 wire mode;
+wire [3:0] sprite;
 
 reg [1:48] robot_orientation_string;
 reg [1:260] robot_state_string;
@@ -15,7 +16,7 @@ reg [1:260] robot_next_state_string;
 
 integer i;
 
-world DUV (.clock_50(clock), .reset_key(reset_key), .mode_toggle(mode_toggle), .clock_toggle(clock_toggle), .mode(mode));
+world DUV (.clock_50(clock), .reset_key(reset_key), .mode_toggle(mode_toggle), .clock_toggle(clock_toggle), .mode(mode), .pixel_x(1'b0), .pixel_y(1'b0), .sprite(sprite));
 
 always #1 clock = !clock;
 

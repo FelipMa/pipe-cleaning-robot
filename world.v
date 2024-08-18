@@ -1,19 +1,22 @@
-module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite, flags);
+module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite, robot_cursor_flags);
 input wire clock_50, reset_key, mode_toggle, clock_toggle;
 output reg mode;
 input wire [9:0] pixel_x, pixel_y; 
 output reg [3:0] sprite;
+output reg [1:0] robot_cursor_flags; // robot_cursor_flags[1] = robot, robot_cursor_flags[0] = cursor
 
-parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
+parameter north = 2'b0000, south = 2'b0001, east = 2'b0010, west = 2'b0011;
 parameter wall = 4'b0000, free_path = 4'b0001, trash_1 = 4'b0011, black_block = 4'b0110;
+
 // Internal regs
 reg robot_clock;
 reg head, left, under, barrier; // Inputs for robot
 reg [1:8] robot_row, robot_column;
-reg [1:3] robot_orientation;
+reg [1:4] robot_orientation;
 reg [1:0] trash_removal_state;
-// map is a 11x20 matrix, but only 10x20 is used (first line is used for robot initial data)
-// each cell is 3 bits long
+
+// map is a 16x20 matrix, but only 15x20 is used (first line is used for robot initial data)
+// each cell is 4 bits long
 // memory must be linear, so every row is concatenated
 reg [1:4] map [1:320];
 
@@ -35,35 +38,30 @@ end
 ///////////////////////////////////
 wire [6:0] sprite_x;
 wire [3:0] sprite_y;
-wire [3:0] map_coding;
-output reg [1:0] flags; // 1 é o flag do robô, 0 é o flag do cursor
+reg [1:0] next_robot_cursor_flags;
 
-assign sprite_x = (pixel_x / 32) + 1;
-assign sprite_y = (pixel_y / 32) + 1;
-assign map_coding = map[sprite_y*20 + sprite_x + 1 + 20];
-always @(posedge clock_50 or negedge reset_key) begin
-	if (!reset_key) begin
-		flags = 2'b00;
-		sprite = map_coding;
-	end
-	else if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin
-		flags[1] = 1'b1;
+assign sprite_x = (pixel_x / 32) + 1; // 1-20
+assign sprite_y = (pixel_y / 32) + 1; // 1-15
+
+always @(sprite_x or reset_flag) begin
+    if (reset_flag == 1'b1) begin
+        next_robot_cursor_flags = 2'b00;
+    end
+	if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin
+        next_robot_cursor_flags[1] = 1'b1;
 		case(robot_orientation)
-			4'b0000: sprite = 4'd2;
-			4'b0001: sprite = 4'd7;
-			4'b0010: sprite = 4'd8;
-			4'b0011: sprite = 4'd9;
+			north: sprite = 4'd2;
+			south: sprite = 4'd7;
+			east: sprite = 4'd8;
+			west: sprite = 4'd9;
 			default: sprite = 4'd2;
 		endcase
 	end
 	else begin
-		sprite <= map_coding;
-		flags <= 2'b00;
+        next_robot_cursor_flags[1] = 1'b0;
+		sprite = map[get_map_address(sprite_y, sprite_x)];
 	end
 end
-
-///////////////////////////////////
-
 
 ///////////////////////////////////
 // build robot
@@ -81,6 +79,7 @@ always @(posedge clock_50) begin
         robot_clock <= 1'b0;
         mode <= 1'b0;
         reset_flag <= 1'b1;
+        robot_cursor_flags <= 2'b00;
     end
 
     else begin
@@ -95,6 +94,7 @@ always @(posedge clock_50) begin
 
         trash_removal_state <= next_trash_removal_state;
         mode <= next_mode;
+        robot_cursor_flags <= next_robot_cursor_flags;
     end
 end
 
@@ -157,7 +157,7 @@ begin
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row - 1, robot_column)] == 2 && robot_row != wall)
+            if (map[get_map_address(robot_row - 1, robot_column)] == trash_1 && robot_row != 1)
                 barrier = 1;
             else
                 barrier = 0;

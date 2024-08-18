@@ -580,12 +580,10 @@ assign cursor_x = (pix_x % 32) * 3; // colors here are represented by 1 bit
 
 // trash_3 ________________________________________________________________________
 
-
-
 always @* begin
 	if (~video_on) begin
-        // emit pink when not in video_on
-		r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end
+		r_next = 8'd0; g_next = 8'd0; b_next = 8'd0;
+    end
 	else if(robot_north_on) begin
 		case(robot_north_data[robot_north_block_x +: 3]) 
             3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
@@ -708,7 +706,8 @@ wire robot_type = {robot_north_on, robot_south_on, robot_east_on, robot_west_on}
 
 always @* begin
 	if (~video_on) begin
-		r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end // emit pink when not in video_on
+		r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0;
+    end
 	else if(flags == 2'b00) begin
 		r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0;
 	end
@@ -746,50 +745,54 @@ end
 
 task robot_rgb;
 	case (robot_type)
-		4'b0001:	begin case(robot_west_on)
-								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
-								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
-								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
-								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
-								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
-								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
-								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
-								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
-							endcase
-					end
-		4'b0010: begin case(robot_east_on)
-								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
-								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
-								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
-								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
-								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
-								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
-								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
-								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
-							endcase
-					end
-		4'b0100: begin case(robot_south_on)
-								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
-								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
-								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
-								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
-								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
-								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
-								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
-								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
-							endcase
-					end
-		4'b1000: begin case(robot_north_on)
-								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
-								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
-								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
-								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
-								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
-								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
-								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
-								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
-							endcase
-					end
+		4'b0001: begin
+            case(robot_west_on)
+				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+				3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+				3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+				3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+				3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+			endcase
+		end
+		4'b0010: begin
+            case(robot_east_on)
+				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+				3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+				3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+				3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+				3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+			endcase
+		end
+		4'b0100: begin
+            case(robot_south_on)
+				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+				3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+				3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+				3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+				3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+					default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+			endcase
+		end
+		4'b1000: begin
+            case(robot_north_on)
+				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+				3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+				3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+				3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+				3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+			endcase
+		end
 	endcase
 endtask
 
