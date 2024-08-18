@@ -1,9 +1,10 @@
-module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite, robot_cursor_flags);
+module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite, robot_cursor_flags, robot_type);
 input wire clock_50, reset_key, mode_toggle, clock_toggle;
 output reg mode;
 input wire [9:0] pixel_x, pixel_y; 
-output reg [3:0] sprite;
+output wire [3:0] sprite;
 output reg [1:0] robot_cursor_flags; // robot_cursor_flags[1] = robot, robot_cursor_flags[0] = cursor
+output reg [4:0] robot_type;
 
 parameter north = 2'b0000, south = 2'b0001, east = 2'b0010, west = 2'b0011;
 parameter wall = 4'b0000, free_path = 4'b0001, trash_1 = 4'b0011, black_block = 4'b0110;
@@ -42,24 +43,26 @@ reg [1:0] next_robot_cursor_flags;
 
 assign sprite_x = (pixel_x / 32) + 1; // 1-20
 assign sprite_y = (pixel_y / 32) + 1; // 1-15
+assign sprite = map[get_map_address(sprite_y, sprite_x)];
 
 always @(sprite_x or reset_flag) begin
     if (reset_flag == 1'b1) begin
         next_robot_cursor_flags = 2'b00;
+		  robot_type = 5'b00000;
     end
-	if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin
+	if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin 
         next_robot_cursor_flags[1] = 1'b1;
 		case(robot_orientation)
-			north: sprite = 4'd2;
-			south: sprite = 4'd7;
-			east: sprite = 4'd8;
-			west: sprite = 4'd9;
-			default: sprite = 4'd2;
+			north: robot_type = 5'b00010; 
+			south: robot_type = 5'b00100;
+			east: robot_type = 5'b01000;
+			west: robot_type = 5'b10000;
+			default: robot_type = 5'b00010;
 		endcase
 	end
 	else begin
-        next_robot_cursor_flags[1] = 1'b0;
-		sprite = map[get_map_address(sprite_y, sprite_x)];
+      next_robot_cursor_flags[1] = 1'b0;
+		robot_type = 5'b00000;
 	end
 end
 
