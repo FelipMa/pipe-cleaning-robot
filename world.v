@@ -1,15 +1,15 @@
-module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite);
+module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite, flags);
 input wire clock_50, reset_key, mode_toggle, clock_toggle;
 output reg mode;
 input wire [9:0] pixel_x, pixel_y; 
 output reg [3:0] sprite;
 
 parameter north = 2'b00, south = 2'b01, east = 2'b10, west = 2'b11;
-
+parameter wall = 4'b0000, free_path = 4'b0001, trash_1 = 4'b0011, black_block = 4'b0110;
 // Internal regs
 reg robot_clock;
 reg head, left, under, barrier; // Inputs for robot
-reg [1:6] robot_row, robot_column;
+reg [1:8] robot_row, robot_column;
 reg [1:3] robot_orientation;
 reg [1:0] trash_removal_state;
 // map is a 11x20 matrix, but only 10x20 is used (first line is used for robot initial data)
@@ -36,14 +36,18 @@ end
 wire [6:0] sprite_x;
 wire [3:0] sprite_y;
 wire [3:0] map_coding;
+output reg [1:0] flags; // 1 é o flag do robô, 0 é o flag do cursor
 
-
-assign sprite_x = (pixel_x / 32);
-assign sprite_y = (pixel_y / 32);
+assign sprite_x = (pixel_x / 32) + 1;
+assign sprite_y = (pixel_y / 32) + 1;
 assign map_coding = map[sprite_y*20 + sprite_x + 1 + 20];
 always @(posedge clock_50 or negedge reset_key) begin
-	if (!reset_key) sprite = map_coding;
+	if (!reset_key) begin
+		flags = 2'b00;
+		sprite = map_coding;
+	end
 	else if ((sprite_x == robot_column) && (sprite_y == robot_row)) begin
+		flags[1] = 1'b1;
 		case(robot_orientation)
 			4'b0000: sprite = 4'd2;
 			4'b0001: sprite = 4'd7;
@@ -52,16 +56,9 @@ always @(posedge clock_50 or negedge reset_key) begin
 			default: sprite = 4'd2;
 		endcase
 	end
-//	else begin
-//		case(map_coding)
-//			4'b0000: sprite = 4'd1;    talvez não seja necessário 
-//			4'b0001: sprite = 4'd0;
-//			4'b0010: sprite = 4'd0;
-//			4'b0111: sprite = 4'd6;
-//		endcase
-//	end
 	else begin
-		sprite = map_coding;
+		sprite <= map_coding;
+		flags <= 2'b00;
 	end
 end
 
@@ -148,73 +145,73 @@ task define_sensors_values;
 begin
 	case(robot_orientation)
         north: begin
-            if (robot_row == 1 || map[get_map_address(robot_row - 1, robot_column)] == 1)
+            if (robot_row == 1 || map[get_map_address(robot_row - 1, robot_column)] == wall)
                 head = 1;
             else
                 head = 0;
-            if (robot_column == 1 || map[get_map_address(robot_row, robot_column - 1)] == 1)
+            if (robot_column == 1 || map[get_map_address(robot_row, robot_column - 1)] == wall)
                 left = 1;
             else
                 left = 0;
-            if (map[get_map_address(robot_row, robot_column)] == 7)
+            if (map[get_map_address(robot_row, robot_column)] == black_block)
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row - 1, robot_column)] == 2 && robot_row != 1)
+            if (map[get_map_address(robot_row - 1, robot_column)] == 2 && robot_row != wall)
                 barrier = 1;
             else
                 barrier = 0;
         end
         south: begin
-            if (robot_row == 10 || map[get_map_address(robot_row + 1, robot_column)] == 1)
+            if (robot_row == 10 || map[get_map_address(robot_row + 1, robot_column)] == wall)
                 head = 1;
             else
                 head = 0;
-            if (robot_column == 20 || map[get_map_address(robot_row, robot_column + 1)] == 1)
+            if (robot_column == 20 || map[get_map_address(robot_row, robot_column + 1)] == wall)
                 left = 1;
             else
                 left = 0;
-            if (map[get_map_address(robot_row, robot_column)] == 7)
+            if (map[get_map_address(robot_row, robot_column)] == black_block)
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row + 1, robot_column)] == 2)
+            if (map[get_map_address(robot_row + 1, robot_column)] == trash_1)
                 barrier = 1;
             else
                 barrier = 0;
         end
         east: begin
-            if (robot_column == 20 || map[get_map_address(robot_row, robot_column + 1)] == 1)
+            if (robot_column == 20 || map[get_map_address(robot_row, robot_column + 1)] == wall)
                 head = 1;
             else
                 head = 0;
-            if (robot_row == 1 || map[get_map_address(robot_row - 1, robot_column)] == 1)
+            if (robot_row == 1 || map[get_map_address(robot_row - 1, robot_column)] == wall)
                 left = 1;
             else
                 left = 0;
-            if (map[get_map_address(robot_row, robot_column)] == 7)
+            if (map[get_map_address(robot_row, robot_column)] == black_block)
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row, robot_column + 1)] == 2)
+            if (map[get_map_address(robot_row, robot_column + 1)] == trash_1)
                 barrier = 1;
             else
                 barrier = 0;
         end
         west: begin
-            if (robot_column == 1 || map[get_map_address(robot_row, robot_column - 1)] == 1)
+            if (robot_column == 1 || map[get_map_address(robot_row, robot_column - 1)] == wall)
                 head = 1;
             else
                 head = 0;
-            if (robot_row == 10 || map[get_map_address(robot_row + 1, robot_column)] == 1)
+            if (robot_row == 10 || map[get_map_address(robot_row + 1, robot_column)] == wall)
                 left = 1;
             else
                 left = 0;
-            if (map[get_map_address(robot_row, robot_column)] == 7)
+            if (map[get_map_address(robot_row, robot_column)] == black_block)
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row, robot_column - 1)] == 2)
+            if (map[get_map_address(robot_row, robot_column - 1)] == trash_1)
                 barrier = 1;
             else
                 barrier = 0;
@@ -265,16 +262,16 @@ begin
                 next_trash_removal_state = 2'b00;
                 case(robot_orientation)
                     north: begin
-                        map[get_map_address(robot_row - 1, robot_column)] = 0;
+                        map[get_map_address(robot_row - 1, robot_column)] = free_path;
                     end
                     south: begin
-                        map[get_map_address(robot_row + 1, robot_column)] = 0;
+                        map[get_map_address(robot_row + 1, robot_column)] = free_path;
                     end
                     east: begin
-                        map[get_map_address(robot_row, robot_column + 1)] = 0;
+                        map[get_map_address(robot_row, robot_column + 1)] = free_path;
                     end
                     west: begin
-                        map[get_map_address(robot_row, robot_column - 1)] = 0;
+                        map[get_map_address(robot_row, robot_column - 1)] = free_path;
                     end
                 endcase
             end
