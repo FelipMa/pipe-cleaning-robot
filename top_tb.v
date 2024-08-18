@@ -101,9 +101,9 @@ always @(DUV.pixel_x or DUV.pixel_y) begin
         $display("Actual state:%s", robot_state_string);
         $display("Next state:%s", robot_next_state_string);
 
-        if (frame_count == 3'b011) begin
-            $stop;
-        end
+        //if (frame_count == 3'b011) begin
+        //    $stop;
+        //end
 
         open_file;
     end
@@ -164,20 +164,13 @@ begin
 end
 endtask
 
+reg [8*20:1] filename;
+
 task open_file;
 begin
-    if (frame_count == 3'b000) begin
-        file = $fopen("frame1.ppm");
-        $fwrite(file, "P3\n640 480\n255\n");
-    end
-    else if (frame_count == 3'b001) begin
-        file = $fopen("frame2.ppm");
-        $fwrite(file, "P3\n640 480\n255\n");
-    end
-    else if (frame_count == 3'b010) begin
-        file = $fopen("frame3.ppm");
-        $fwrite(file, "P3\n640 480\n255\n");
-    end
+    $sformat(filename, "frame%d.ppm", frame_count);
+	 file = $fopen(filename, "w"); // abre o arquivo com o nome formatado
+    $fwrite(file, "P3\n640 480\n255\n");
 end
 endtask
 
