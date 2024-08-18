@@ -1,9 +1,10 @@
-module graphics (clock_50, video_on, pix_x, pix_y, graph_r, graph_g, graph_b, sprite, flags);
+module graphics (clock_50, video_on, pix_x, pix_y, graph_r, graph_g, graph_b, sprite, flags, robot_type);
 input wire clock_50, video_on;
 input wire [9:0] pix_x, pix_y;
 input wire [3:0] sprite; //hexadecimal code of the current sprite
 input wire [1:0] flags; // 1 é o flag do robô, 0 é o flag do cursor
 output reg [7:0] graph_r, graph_g, graph_b;
+input wire [4:0] robot_type;
 
 // posições máximas dos pixels do display de gráfico
 parameter MAX_X = 640;
@@ -74,8 +75,7 @@ always @* begin
 		4'd9: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on = 1'b0; robot_west_on = 1'b1; end //robot_west
 		default: begin wall_block_on = 1'b0; free_path_block_on = 1'b0; robot_north_on = 1'b0; trash_1_on = 1'b0; trash_2_on = 1'b0; trash_3_on = 1'b0; black_block_on = 1'b0; robot_south_on = 1'b0; robot_east_on =1'b0; robot_west_on = 1'b0; end //nothing
 	endcase
-end
-
+end				
 // robot_north ________________________________________________________________
 reg [0:95] robot_north_data;
 wire [4:0] robot_north_block_y;
@@ -584,54 +584,6 @@ always @* begin
 	if (~video_on) begin
 		r_next = 8'd0; g_next = 8'd0; b_next = 8'd0;
     end
-	else if(robot_north_on) begin
-		case(robot_north_data[robot_north_block_x +: 3]) 
-            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
-            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
-            3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
-            3'd3: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
-            3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
-            3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
-            3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
-            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
-		endcase
-	end
-	else if(robot_south_on) begin
-		case(robot_south_data[robot_south_block_x +: 3]) 
-            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
-            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
-            3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
-            3'd3: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
-            3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
-            3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
-            3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
-            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
-		endcase
-	end
-	else if(robot_east_on) begin
-		case(robot_east_data[robot_east_block_x +: 3]) 
-            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
-            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
-            3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
-            3'd3: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
-            3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
-            3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
-            3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
-            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
-		endcase
-	end
-	else if(robot_west_on) begin
-		case(robot_west_data[robot_west_block_x +: 3]) 
-            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
-            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
-            3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
-            3'd3: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
-            3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
-            3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
-            3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
-            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
-		endcase
-	end
 	else if(black_block_on) begin
 		case(black_block_data[black_block_x +: 3]) 
             3'd0: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //grey
@@ -702,7 +654,6 @@ always @* begin
 	end
 end
 
-wire robot_type = {robot_north_on, robot_south_on, robot_east_on, robot_west_on}; // 1 é o flag do robô, 0 é o flag do cursor
 
 always @* begin
 	if (~video_on) begin
@@ -724,12 +675,13 @@ always @* begin
 		endcase
 		end
 	else if(flags == 2'b10) begin
-		robot_rgb;
+		robot_rgb();
 	end
 	else if(flags == 2'b11) begin
 		if (cursor_data[cursor_x +: 3] == 3'd0) begin
-			robot_rgb;
+			robot_rgb();
 		end
+		else begin
 		case(cursor_data[cursor_x +: 3]) 
             3'd0: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //transparent!
             3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
@@ -740,13 +692,14 @@ always @* begin
             3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
             default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 		endcase
+		end
 	end
 end
 
 task robot_rgb;
 	case (robot_type)
-		4'b0001: begin
-            case(robot_west_on)
+		5'b00010: begin
+            case(robot_north_data[robot_north_block_x +: 3])
 				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
 				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
 				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
@@ -757,8 +710,8 @@ task robot_rgb;
 				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 			endcase
 		end
-		4'b0010: begin
-            case(robot_east_on)
+		4'b00100: begin
+            case(robot_south_data[robot_south_block_x +: 3])
 				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
 				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
 				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
@@ -769,8 +722,8 @@ task robot_rgb;
 				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 			endcase
 		end
-		4'b0100: begin
-            case(robot_south_on)
+		4'b01000: begin
+            case(robot_east_data[robot_east_block_x +: 3])
 				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
 				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
 				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
@@ -781,8 +734,8 @@ task robot_rgb;
 					default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 			endcase
 		end
-		4'b1000: begin
-            case(robot_north_on)
+		4'b10000: begin
+            case(robot_west_data[robot_west_block_x +: 3])
 				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
 				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
 				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
@@ -793,13 +746,32 @@ task robot_rgb;
 				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 			endcase
 		end
+		default: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end
 	endcase
 endtask
 
+wire [4:0] robots_data;
+wire transparency;
+assign robots_data = {|robot_west_data[robot_west_block_x +: 3], |robot_east_data[robot_east_block_x +: 3], |robot_south_data[robot_south_block_x +: 3], |robot_north_data[robot_north_block_x +: 3], 1'b0};
+assign transparency = |(~robots_data & robot_type);
 always @(posedge clock_50) begin
-    graph_r <= r_next + r_transparent;
-    graph_g <= g_next + g_transparent;
-    graph_b <= b_next + b_transparent;
+	if (flags) begin
+		if(transparency) begin
+			graph_r <= r_next;
+			graph_g <= g_next;
+			graph_b <= b_next;
+		end
+		else begin
+			graph_r <= r_transparent;
+			graph_g <= g_transparent;
+			graph_b <= b_transparent;
+		end
+	end
+	else begin
+		graph_r <= r_next;
+		graph_g <= g_next;
+		graph_b <= b_next;
+	end
 end
 
 
