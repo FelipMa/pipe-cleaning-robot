@@ -1,7 +1,8 @@
-module graphics (clock_50, video_on, pix_x, pix_y, graph_r, graph_g, graph_b, sprite);
+module graphics (clock_50, video_on, pix_x, pix_y, graph_r, graph_g, graph_b, sprite, flags);
 input wire clock_50, video_on;
 input wire [9:0] pix_x, pix_y;
 input wire [3:0] sprite; //hexadecimal code of the current sprite
+input wire [1:0] flags; // 1 é o flag do robô, 0 é o flag do cursor
 output reg [7:0] graph_r, graph_g, graph_b;
 
 // posições máximas dos pixels do display de gráfico
@@ -16,7 +17,7 @@ parameter WALL_X_R = 40;
 reg robot_north_on, free_path_block_on, wall_block_on, black_block_on, trash_1_on, trash_2_on, trash_3_on, robot_south_on, robot_east_on, robot_west_on;
 // 20x15 sprites map
 // internal registers
-reg [7:0] r_next, g_next, b_next;
+reg [7:0] r_next, g_next, b_next, r_transparent, g_transparent, b_transparent;
 
 // assignments
 // map __________________________________________________________________
@@ -113,7 +114,7 @@ always @(robot_north_block_y) begin
 		5'd29: robot_north_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd30: robot_north_data = 96'o1000_0000_0000_0000_0000_0000_0000_0001;
 		5'd31: robot_north_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
-		default: robot_north_data = 96'o0000_0000_0000_0000_0000_0000_0000_0000;
+		default: robot_north_data=96'o0000_0000_0000_0000_0000_0000_0000_0000;
 	endcase
 end
 
@@ -532,7 +533,52 @@ assign trash_3_y = pix_y % 32;
 assign trash_3_x = (pix_x % 32) * 3; // colors here are represented by 1 bit
 
 // trash_3 ________________________________________________________________________
+// cursor ________________________________________________________________________
+wire [4:0] cursor_y; 
+wire [6:0] cursor_x;
+reg [0:95] cursor_data;
+always @(cursor_y) begin
+	case(cursor_y)
+		5'd0: cursor_data =  96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd1: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd2: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd3: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd4: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd5: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd6: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd7: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd8: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd9: cursor_data =  96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd10: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd11: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd12: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd13: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd14: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd15: cursor_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd16: cursor_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		5'd17: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd18: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd19: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd20: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd21: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd22: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd23: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd24: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd25: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd26: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd27: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd28: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd29: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd30: cursor_data = 96'o1000_0000_0000_0001_1000_0000_0000_0001;
+		5'd31: cursor_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+		default: cursor_data = 96'o1111_1111_1111_1111_1111_1111_1111_1111;
+	endcase
+end
+// cursor_data x and y go from 0 to 31 and represent relative position of the pixel on the 32x32 block
+assign cursor_y = pix_y % 32;
+assign cursor_x = (pix_x % 32) * 3; // colors here are represented by 1 bit
 
+// trash_3 ________________________________________________________________________
 
 
 
@@ -542,6 +588,42 @@ always @* begin
 		r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end
 	else if(robot_north_on) begin
 		case(robot_north_data[robot_north_block_x +: 3]) 
+            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
+            3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
+            3'd3: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
+            3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
+            3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
+            3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
+            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+		endcase
+	end
+	else if(robot_south_on) begin
+		case(robot_south_data[robot_south_block_x +: 3]) 
+            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
+            3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
+            3'd3: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
+            3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
+            3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
+            3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
+            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+		endcase
+	end
+	else if(robot_east_on) begin
+		case(robot_east_data[robot_east_block_x +: 3]) 
+            3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
+            3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
+            3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
+            3'd3: begin r_next = 8'd168; g_next = 8'd168; b_next = 8'd168; end //grey (darker)
+            3'd4: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd0; end //yellow
+            3'd5: begin r_next = 8'd255; g_next = 8'd0; b_next = 8'd0; end //red
+            3'd6: begin r_next = 8'd92; g_next = 8'd64; b_next = 8'd51; end //brown
+            default: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end // white
+		endcase
+	end
+	else if(robot_west_on) begin
+		case(robot_west_data[robot_west_block_x +: 3]) 
             3'd0: begin r_next = 8'd190; g_next = 8'd190; b_next = 8'd190; end //grey
             3'd1: begin r_next = 8'd0; g_next = 8'd0; b_next = 8'd0; end //black
             3'd2: begin r_next = 8'd255; g_next = 8'd255; b_next = 8'd255; end //white
@@ -622,10 +704,100 @@ always @* begin
 	end
 end
 
-always @(posedge clock_50) begin
-    graph_r <= r_next;
-    graph_g <= g_next;
-    graph_b <= b_next;
+wire robot_type = {robot_north_on, robot_south_on, robot_east_on, robot_west_on}; // 1 é o flag do robô, 0 é o flag do cursor
+
+always @* begin
+	if (~video_on) begin
+		r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end // emit pink when not in video_on
+	else if(flags == 2'b00) begin
+		r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0;
+	end
+	else if(flags == 2'b01) begin
+		case(cursor_data[cursor_x +: 3]) 
+            3'd0: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //transparent!
+            3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+            3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+            3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+            3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+            3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+            3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+            default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+		endcase
+		end
+	else if(flags == 2'b10) begin
+		robot_rgb;
+	end
+	else if(flags == 2'b11) begin
+		if (cursor_data[cursor_x +: 3] == 3'd0) begin
+			robot_rgb;
+		end
+		case(cursor_data[cursor_x +: 3]) 
+            3'd0: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //transparent!
+            3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+            3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+            3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+            3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+            3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+            3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+            default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+		endcase
+	end
 end
+
+task robot_rgb;
+	case (robot_type)
+		4'b0001:	begin case(robot_west_on)
+								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+							endcase
+					end
+		4'b0010: begin case(robot_east_on)
+								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+							endcase
+					end
+		4'b0100: begin case(robot_south_on)
+								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+							endcase
+					end
+		4'b1000: begin case(robot_north_on)
+								3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+								3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+								3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+								3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+								3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+								3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+								3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+								default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
+							endcase
+					end
+	endcase
+endtask
+
+always @(posedge clock_50) begin
+    graph_r <= r_next + r_transparent;
+    graph_g <= g_next + g_transparent;
+    graph_b <= b_next + b_transparent;
+end
+
 
 endmodule
