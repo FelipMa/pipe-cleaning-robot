@@ -17,8 +17,10 @@ wire [7:0] vga_r, vga_g, vga_b;
 wire [8:0] ledg;
 wire [10:0] buttonsOut;
 
+
+
 integer file;
-reg [2:0] frame_count;
+integer frame_count;
 
 top DUV (.CLOCK_50(clock), .KEY(key), .VGA_HS(vga_hs), .VGA_VS(vga_vs), .VGA_R(vga_r), .VGA_G(vga_g), .VGA_B(vga_b), .VGA_CLK(), .LEDG(), .SW(switch), .up_z(1'b0), .down_y(1'b0), .left_x(1'b0), .right(1'b0), .a_b(1'b0), .selectSignal(1'b0), .start_c(1'b0), .buttonsOut(buttonsOut));
 

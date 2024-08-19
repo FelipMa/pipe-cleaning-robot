@@ -216,6 +216,15 @@ assign robot_east_block_x = (pix_x % 32) * 3; // (*3 is because each color is re
 // robot ________________________________________________________________
 
 // robot ________________________________________________________________
+//case(robot_east_data[robot_east_block_x +: 3])
+//				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
+//				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
+//				3'd2: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end //white
+//				3'd3: begin r_transparent = 8'd168; g_transparent = 8'd168; b_transparent = 8'd168; end //grey (darker)
+//				3'd4: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd0; end //yellow
+//				3'd5: begin r_transparent = 8'd255; g_transparent = 8'd0; b_transparent = 8'd0; end //red
+//				3'd6: begin r_transparent = 8'd92; g_transparent = 8'd64; b_transparent = 8'd51; end //brown
+//					default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 reg [0:95] robot_west_data;
 wire [4:0] robot_west_block_y;
 wire [6:0] robot_west_block_x;
@@ -710,7 +719,7 @@ task robot_rgb;
 				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 			endcase
 		end
-		4'b00100: begin
+		5'b00100: begin
             case(robot_south_data[robot_south_block_x +: 3])
 				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
 				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
@@ -722,7 +731,7 @@ task robot_rgb;
 				default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 			endcase
 		end
-		4'b01000: begin
+		5'b01000: begin
             case(robot_east_data[robot_east_block_x +: 3])
 				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
 				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
@@ -734,7 +743,7 @@ task robot_rgb;
 					default: begin r_transparent = 8'd255; g_transparent = 8'd255; b_transparent = 8'd255; end // white
 			endcase
 		end
-		4'b10000: begin
+		5'b10000: begin
             case(robot_west_data[robot_west_block_x +: 3])
 				3'd0: begin r_transparent = 8'd190; g_transparent = 8'd190; b_transparent = 8'd190; end //grey
 				3'd1: begin r_transparent = 8'd0; g_transparent = 8'd0; b_transparent = 8'd0; end //black
