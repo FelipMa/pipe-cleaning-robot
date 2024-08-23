@@ -32,7 +32,7 @@ vga_sync vga_sync(.clock_50(CLOCK_50), .clock_25(pll_clk_25), .reset_key(KEY[1])
 graphics graphics(.clock_50(CLOCK_50), .video_on(video_on), .pix_x(pixel_x), .pix_y(pixel_y), .graph_r(VGA_R), .graph_g(VGA_G), .graph_b(VGA_B), .sprite(sprite), .flags(robot_cursor_flags), .robot_type(robot_type));
 
 // build controller
-controller controller(.clock_50(CLOCK_50), .reset_key(KEY[0]), .up_z(up_z), .down_y(down_y), .left_x(left_x), .right(right), .a_b(a_b), .selectSignal(selectSignal), .start_c(start_c), .buttonsOut(buttonsOut));
+controller controller(.clk(CLOCK_50), .reset(KEY[0]), .up_z(up_z), .down_y(down_y), .left_x(left_x), .right(right), .a_b(a_b), .selectSignal(selectSignal), .start_c(start_c), .buttonsOut(buttonsOut), .vga_vs(VGA_VS));
 
 assign VGA_CLK = pll_clk_25;
 assign LEDG[0] = 1'b1;
