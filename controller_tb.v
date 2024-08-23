@@ -24,20 +24,20 @@ end
 initial begin
 	clk = 0;
 	reset = 0;
-	up_z = 0;
-	down_y = 0;
-	left_x = 0;
-	right = 0;
-	a_b = 0;
-	start_c = 0;
+	up_z = 1;
+	down_y = 1;
+	left_x = 1;
+	right = 1;
+	a_b = 1;
+	start_c = 1;
 	
 	#20 reset = 1;
 	#20 vga_vs = 1;
 	#20 vga_vs = 0;
 
-	#10 up_z = 1;
 	#10 up_z = 0;
 	#10 up_z = 1;
+	#10 up_z = 0;
 
 	// #20972000
 
