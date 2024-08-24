@@ -9,3 +9,4 @@
 *.qws
 /greybox_tmp
 pll*
+!pin_assignment/*.qsf
