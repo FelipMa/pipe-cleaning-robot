@@ -171,7 +171,7 @@ reg [8*20:1] filename;
 task open_file;
 begin
     $sformat(filename, "frame%d.ppm", frame_count);
-	 file = $fopen(filename, "w"); // abre o arquivo com o nome formatado
+	file = $fopen(filename, "w"); // abre o arquivo com o nome formatado
     $fwrite(file, "P3\n640 480\n255\n");
 end
 endtask
