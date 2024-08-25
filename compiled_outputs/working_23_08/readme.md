@@ -4,3 +4,5 @@
 - No controller
 - Mode toggle on key 2
 - On manual mode, robot cleans map instantly when key 3 is pressed
+
+https://github.com/user-attachments/assets/976a50dc-ee89-4e9a-904a-33a968f19d1d
