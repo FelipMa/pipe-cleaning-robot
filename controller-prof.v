@@ -4,18 +4,18 @@ input clk, Reset, Pino1, Pino2, Pino3, Pino4, Pino6, Pino9, vga_vs;
 output reg [11:0] Saidas;
 output reg Select;
 
-// Saidas[11] = Saida_Mode
-// Saidas[10] = Saida_Start
-// Saidas[9] = Saida_Z
-// Saidas[8] = Saida_Y
-// Saidas[7] = Saida_X
-// Saidas[6] = Saida_C
-// Saidas[5] = Saida_B
-// Saidas[4] = Saida_A
-// Saidas[3] = Saida_Right
-// Saidas[2] = Saida_Left
-// Saidas[1] = Saida_Down
-// Saidas[0] = Saida_Up
+// Saidas[0] = Saida_Mode
+// Saidas[1] = Saida_Start
+// Saidas[2] = Saida_Z
+// Saidas[3] = Saida_Y
+// Saidas[4] = Saida_X
+// Saidas[5] = Saida_C
+// Saidas[6] = Saida_B
+// Saidas[7] = Saida_A
+// Saidas[8] = Saida_Right
+// Saidas[9] = Saida_Left
+// Saidas[10] = Saida_Down
+// Saidas[11] = Saida_Up
 
 
 parameter	AGUARDAR_ATIVACAO = 0,

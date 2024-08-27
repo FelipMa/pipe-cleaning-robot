@@ -3,8 +3,8 @@ input wire clock_50, video_on;
 input wire [9:0] pix_x, pix_y;
 input wire [3:0] sprite; //hexadecimal code of the current sprite
 input wire [1:0] flags; // 1 é o flag do robô, 0 é o flag do cursor
-output reg [7:0] graph_r, graph_g, graph_b;
 input wire [4:0] robot_type;
+output reg [7:0] graph_r, graph_g, graph_b;
 
 // posições máximas dos pixels do display de gráfico
 parameter MAX_X = 640;
