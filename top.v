@@ -7,17 +7,17 @@ input wire [17:0] SW;
 // input wire [35:0] GPIO; // input controller
 input wire up_z, down_y, left_x, right, a_b, selectSignal, start_c; // delete after discovering GPIO's connection.
 output wire VGA_HS, VGA_VS, VGA_CLK;
+output wire [10:0] buttonsOut; // change after integration with robot
 output wire [7:0] VGA_R, VGA_G, VGA_B;
 output wire [8:0] LEDG;
-output wire [10:0] buttonsOut; // change after integration with robot
 
 // internal wires
 wire pll_clk_25;
-wire [9:0] pixel_x, pixel_y;
 wire video_on;
 wire [3:0] sprite;
-wire [1:0] robot_cursor_flags;
 wire [4:0] robot_type;
+wire [9:0] pixel_x, pixel_y;
+wire [1:0] robot_cursor_flags;
 
 // build PLL
 pll pll (.inclk0(CLOCK_50), .c0(pll_clk_25));
@@ -34,7 +34,7 @@ graphics graphics(.clock_50(CLOCK_50), .video_on(video_on), .pix_x(pixel_x), .pi
 // build controller
 controller controller(.clk(CLOCK_50), .reset(KEY[0]), .up_z(up_z), .down_y(down_y), .left_x(left_x), .right(right), .a_b(a_b), .selectSignal(selectSignal), .start_c(start_c), .buttonsOut(buttonsOut), .vga_vs(VGA_VS));
 
-assign VGA_CLK = pll_clk_25;
 assign LEDG[0] = 1'b1;
+assign VGA_CLK = pll_clk_25;
 
 endmodule

@@ -39,6 +39,22 @@ initial begin
 	#10 up_z = 1;
 	#10 up_z = 0;
 
+	#10 a_b = 0;
+	#10 a_b = 1;
+	#10 a_b = 0;
+
+	#10 down_y = 0;
+	#10 down_y = 1;
+	#10 down_y = 0;
+
+	#10 left_x  = 0;
+	#10 left_x  = 1;
+	#10 left_x  = 0;
+
+	#10 right = 0;
+	#10 right = 1;
+	#10 right = 0;
+
 	// #20972000
 
 	while(buttonsOut[0] == 1'b0) begin
