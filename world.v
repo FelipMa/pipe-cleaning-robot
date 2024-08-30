@@ -255,30 +255,38 @@ end
 endtask
 
 task remove_trash;
+    reg [9:0] current_pos;
 begin
-    if (remove == 1)
-        begin
-        if (trash_removal_state == 2'b00 || trash_removal_state == 2'b01)
+    if (remove == 1) begin
+        if (trash_removal_state == 2'b00 || trash_removal_state == 2'b01) begin
             next_trash_removal_state = trash_removal_state + 1'b1;
-        else
-            begin
-                next_trash_removal_state = 2'b00;
-                case(robot_orientation)
-                    north: begin
-                        map[get_map_address(robot_row - 1, robot_column)] = free_path;
-                    end
-                    south: begin
-                        map[get_map_address(robot_row + 1, robot_column)] = free_path;
-                    end
-                    east: begin
-                        map[get_map_address(robot_row, robot_column + 1)] = free_path;
-                    end
-                    west: begin
-                        map[get_map_address(robot_row, robot_column - 1)] = free_path;
-                    end
-                endcase
+        end else begin
+            next_trash_removal_state = 2'b00;
+
+            case(robot_orientation)
+                north: begin
+                    current_pos = get_map_address(robot_row - 1, robot_column);
+                end
+                south: begin
+                    current_pos = get_map_address(robot_row + 1, robot_column);
+                end
+                east: begin
+                    current_pos = get_map_address(robot_row, robot_column + 1);
+                end
+                west: begin
+                    current_pos = get_map_address(robot_row, robot_column - 1);
+                end
+            endcase
+
+            if (map[current_pos] == trash_3) begin
+                map[current_pos] = trash_2;
+            end else if (map[current_pos] == trash_2) begin
+                map[current_pos] = trash_1;
+            end else if (map[current_pos] == trash_1) begin
+                map[current_pos] = free_path;
             end
         end
+    end
 end
 endtask
 
