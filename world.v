@@ -7,7 +7,7 @@ output reg [1:0] robot_cursor_flags; // robot_cursor_flags[1] = robot, robot_cur
 output reg [4:0] robot_type;
 
 parameter north = 4'b0000, south = 4'b0001, east = 4'b0010, west = 4'b0011;
-parameter wall = 4'b0000, free_path = 4'b0001, trash_1 = 4'b0011, black_block = 4'b0110;
+parameter wall = 4'b0000, free_path = 4'b0001, trash_1 = 4'b0011, trash_2 = 4'b0100, trash_3 = 4'b0101, black_block = 4'b0110;
 
 // Internal regs
 reg robot_clock;
