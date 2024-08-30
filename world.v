@@ -1,7 +1,8 @@
-module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite, robot_cursor_flags, robot_type);
+module world(clock_50, reset_key, mode_toggle, clock_toggle, mode, pixel_x, pixel_y, sprite, robot_cursor_flags, robot_type, control_inputs);
 input wire clock_50, reset_key, mode_toggle, clock_toggle;
 output reg mode;
 input wire [9:0] pixel_x, pixel_y; 
+input [11:0] control_inputs;
 output wire [3:0] sprite;
 output reg [1:0] robot_cursor_flags; // robot_cursor_flags[1] = robot, robot_cursor_flags[0] = cursor
 output reg [4:0] robot_type;
@@ -12,7 +13,10 @@ parameter wall = 4'b0000, free_path = 4'b0001, trash_1 = 4'b0011, trash_2 = 4'b0
 // Internal regs
 reg robot_clock;
 reg head, left, under, barrier; // Inputs for robot
-reg [1:8] robot_row, robot_column;
+reg [3:0] robot_row;
+reg [4:0] cursor_row;
+reg [4:0] robot_column;
+reg [5:0] cursor_column;
 reg [1:4] robot_orientation;
 reg [1:0] trash_removal_state;
 
@@ -23,21 +27,137 @@ reg [1:4] map [1:320];
 
 reg next_mode, next_robot_clock;
 reg [1:0] next_trash_removal_state;
+reg [1:9] address;
 
 reg reset_flag;
+reg pause_flag;
 
 // internal wires
 wire front, turn, remove; // Outputs from robot
-
-initial begin
-    // WARNING: On tb error, check if map.txt is in the same folder as the testbench
-	$readmemb("map.txt", map);
-	robot_row = {map[1], map[2]};
-	robot_column = {map[3], map[4]};
-	robot_orientation = map[5];
+reg map_change_flag;
+reg [3:0] sprite_temp_robot;
+reg [1:9] cursor_address;
+// map and robot initialization and resetting;
+always @(*) begin
+	if (reset_flag) begin // map and robot initialization or resetting
+		// WARNING: On tb error, check if map.txt is in the same folder as the testbench
+		$readmemb("map.txt", map);
+		robot_row = {map[1], map[2]};
+		robot_column = {map[3], map[4]};
+		robot_orientation = map[5];
+		cursor_row = 5'b10000; // 16 
+		cursor_column = 6'b100000; // 21
+		next_trash_removal_state = 2'b00;
+      pause_flag = 0;
+      define_sensors_values;
+	end
+	else begin // robot movement and updates
+        if (control_inputs[10]) begin // pause flag!
+            pause_flag = ~pause_flag;
+				cursor_column = 6'd1;
+            cursor_row = 5'd1;
+        end 
+        if (pause_flag == 0) begin 
+            cursor_column = 6'd21; // out of display range
+            cursor_row = 5'd16; // out of display range
+            if (robot_clock == 1'b1) begin
+                update_robot_position;
+                remove_trash;
+                define_sensors_values;
+            end
+        end 
+        else begin
+        // up-down movement
+            if (control_inputs[3]) begin //cursor right movement and updates
+                if (cursor_column == 20) 
+                    cursor_column = 6'd1;
+                else 
+                    cursor_column = cursor_column + 6'd1;
+            end
+            else if (control_inputs[2]) begin //cursor left movement and updates
+                if (cursor_column == 1)
+                    cursor_column = 6'd20;
+                else
+                    cursor_column = cursor_column - 6'd1;
+            end
+            // right-left movement 
+            if (control_inputs[1]) begin //cursor down movement and updates
+                if (cursor_row == 15) 
+                    cursor_row = 5'd1;
+                else
+                    cursor_row = cursor_row + 5'd1;
+            end
+            else if (control_inputs[0]) begin //cursor up movement and updates
+                if (cursor_row == 1)
+                    cursor_row = 5'd15;
+                else
+                    cursor_row = cursor_row - 5'd1;
+            end
+            if (control_inputs[9]) begin
+                sprite_temp_robot = free_path;
+                map_change_flag = 1;
+            end
+            else if(control_inputs[8]) begin
+                sprite_temp_robot = trash_1;
+                map_change_flag = 1;
+            end
+            else if(control_inputs[7]) begin
+                sprite_temp_robot = trash_2;
+                map_change_flag = 1;
+            end
+            else if(control_inputs[6]) begin
+                sprite_temp_robot = trash_3;
+                map_change_flag = 1;
+            end
+            else if(control_inputs[5]) begin
+                sprite_temp_robot = wall;
+                map_change_flag = 1;
+            end
+            else if(control_inputs[4]) begin
+                sprite_temp_robot = black_block;
+                map_change_flag = 1;
+            end
+            if (map_change_flag) begin
+					 cursor_address = get_map_address(cursor_row, cursor_column);
+                map[cursor_address] = sprite_temp_robot;
+                map_change_flag = 0;
+            end
+        end
+    end
 end
+// block to control the control's inputs. 
+// control_inputs[0] = Saida_Mode
+// control_inputs[1] = Saida_Start
+// control_inputs[2] = Saida_Z
+// control_inputs[3] = Saida_Y
+// control_inputs[4] = Saida_X
+// control_inputs[5] = Saida_C
+// control_inputs[6] = Saida_B
+// control_inputs[7] = Saida_A
+// control_inputs[8] = Saida_Right
+// control_inputs[9] = Saida_Left
+// control_inputs[10] = Saida_Down
+// control_inputs[11] = Saida_Up
+//always @* begin
+//	if (control_inputs[8]) begin
+//		if (cursor_row == 
+//	end
+//end
+
+// Saidas[11] = Saida_Mode
+// Saidas[10] = Saida_Start
+// Saidas[9] = Saida_Z
+// Saidas[8] = Saida_Y
+// Saidas[7] = Saida_X
+// Saidas[6] = Saida_C
+// Saidas[5] = Saida_B
+// Saidas[4] = Saida_A
+// Saidas[3] = Saida_Right
+// Saidas[2] = Saida_Left
+// Saidas[1] = Saida_Down
+// Saidas[0] = Saida_Up
 ///////////////////////////////////
-wire [6:0] sprite_x;
+wire [4:0] sprite_x;
 wire [3:0] sprite_y;
 reg [1:0] next_robot_cursor_flags;
 
@@ -45,6 +165,7 @@ assign sprite_x = (pixel_x / 32) + 1; // 1-20
 assign sprite_y = (pixel_y / 32) + 1; // 1-15
 assign sprite = map[get_map_address(sprite_y, sprite_x)];
 
+// block to control the robot sprite. It changes its type and flags.
 always @(sprite_x or reset_flag) begin
     if (reset_flag == 1'b1) begin
         next_robot_cursor_flags = 2'b00;
@@ -64,6 +185,11 @@ always @(sprite_x or reset_flag) begin
       next_robot_cursor_flags[1] = 1'b0;
 		robot_type = 5'b00000;
 	end
+    if ((sprite_x == cursor_column) && (sprite_y == cursor_row)) begin
+        next_robot_cursor_flags[0] = 1'b1;
+    end
+    else 
+        next_robot_cursor_flags[0] = 1'b0;
 end
 
 ///////////////////////////////////
@@ -84,7 +210,6 @@ always @(posedge clock_50) begin
         reset_flag <= 1'b1;
         robot_cursor_flags <= 2'b00;
     end
-
     else begin
         reset_flag <= 1'b0;
 
@@ -129,20 +254,7 @@ always @(negedge mode_toggle or negedge clock_toggle or posedge reset_flag) begi
     end
 end
 
-always @(posedge robot_clock or posedge reset_flag) begin
-    if (reset_flag) begin
-        next_trash_removal_state = 2'b00;
-        define_sensors_values;
-    end
 
-    else begin
-        if (robot_clock == 1'b1) begin
-            update_robot_position;
-            remove_trash;
-            define_sensors_values;
-        end
-    end
-end
 
 task define_sensors_values;
 begin
@@ -160,7 +272,7 @@ begin
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row - 1, robot_column)] == trash_1 && robot_row != 1)
+            if ((map[get_map_address(robot_row - 1, robot_column)] == trash_1 || map[get_map_address(robot_row - 1, robot_column)] == trash_2 || map[get_map_address(robot_row - 1, robot_column)] == trash_3) && robot_row != 1)
                 barrier = 1;
             else
                 barrier = 0;
@@ -178,7 +290,7 @@ begin
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row + 1, robot_column)] == trash_1)
+            if (map[get_map_address(robot_row + 1, robot_column)] == trash_1  || map[get_map_address(robot_row + 1, robot_column)] == trash_2 || map[get_map_address(robot_row + 1, robot_column)] == trash_3)
                 barrier = 1;
             else
                 barrier = 0;
@@ -196,7 +308,7 @@ begin
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row, robot_column + 1)] == trash_1)
+            if (map[get_map_address(robot_row, robot_column + 1)] == trash_1 || map[get_map_address(robot_row, robot_column + 1)] == trash_2 || map[get_map_address(robot_row, robot_column + 1)] == trash_3)
                 barrier = 1;
             else
                 barrier = 0;
@@ -214,7 +326,7 @@ begin
                 under = 1;
             else
                 under = 0;
-            if (map[get_map_address(robot_row, robot_column - 1)] == trash_1)
+            if (map[get_map_address(robot_row, robot_column - 1)] == trash_1 || map[get_map_address(robot_row, robot_column - 1)] == trash_2 || map[get_map_address(robot_row, robot_column - 1)] == trash_3)
                 barrier = 1;
             else
                 barrier = 0;
@@ -253,44 +365,41 @@ begin
     endcase
 end
 endtask
-
+reg  [3:0] sprite_temp;
+reg  [3:0] surroundings_temp;
+reg signed [1:8] row_offset;
+reg signed [1:8] column_offset;
 task remove_trash;
-    reg [9:0] current_pos;
 begin
-    if (remove == 1) begin
-        if (trash_removal_state == 2'b00 || trash_removal_state == 2'b01) begin
+    if (remove == 1)
+    begin
+        if (trash_removal_state == 2'b00 || trash_removal_state == 2'b01)
             next_trash_removal_state = trash_removal_state + 1'b1;
-        end else begin
-            next_trash_removal_state = 2'b00;
-
-            case(robot_orientation)
-                north: begin
-                    current_pos = get_map_address(robot_row - 1, robot_column);
-                end
-                south: begin
-                    current_pos = get_map_address(robot_row + 1, robot_column);
-                end
-                east: begin
-                    current_pos = get_map_address(robot_row, robot_column + 1);
-                end
-                west: begin
-                    current_pos = get_map_address(robot_row, robot_column - 1);
-                end
+        else
+        begin
+            next_trash_removal_state = 2'b00;    
+            case (robot_orientation)
+                north:  begin row_offset = -1; column_offset = 0;  end
+                south:  begin row_offset = 1;  column_offset = 0;  end
+                east:   begin row_offset = 0;  column_offset = 1;  end
+                west:   begin row_offset = 0;  column_offset = -1; end
+                default:begin row_offset = 0;  column_offset = 0;  end // default case
             endcase
-
-            if (map[current_pos] == trash_3) begin
-                map[current_pos] = trash_2;
-            end else if (map[current_pos] == trash_2) begin
-                map[current_pos] = trash_1;
-            end else if (map[current_pos] == trash_1) begin
-                map[current_pos] = free_path;
-            end
+				address = get_map_address(robot_row + row_offset, robot_column + column_offset);
+            surroundings_temp = map[get_map_address(robot_row + row_offset, robot_column + column_offset)];
+            case (surroundings_temp)
+                trash_1: begin sprite_temp = free_path; next_trash_removal_state = 2'b00; end
+                trash_2: begin sprite_temp = trash_1; next_trash_removal_state = 2'b00; end
+                trash_3: begin sprite_temp = trash_2; next_trash_removal_state = 2'b00; end
+                default: begin sprite_temp = free_path; next_trash_removal_state = 2'b00; end
+            endcase
+            map[address] = sprite_temp;
         end
     end
 end
 endtask
 
-function integer get_map_address(input [1:6] row, column);
+function integer get_map_address(input [1:8] row, column);
 begin
     get_map_address = (row * 20) + column;
 end
