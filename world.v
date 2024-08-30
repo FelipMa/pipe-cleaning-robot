@@ -57,6 +57,7 @@ always @(*) begin
 				cursor_column = 6'd1;
             cursor_row = 5'd1;
         end 
+		  else 
         if (pause_flag == 0) begin 
             cursor_column = 6'd21; // out of display range
             cursor_row = 5'd16; // out of display range

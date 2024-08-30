@@ -760,12 +760,29 @@ task robot_rgb;
 endtask
 
 wire [4:0] robots_data;
-wire transparency;
+wire robot_transparency;
 assign robots_data = {|robot_west_data[robot_west_block_x +: 3], |robot_east_data[robot_east_block_x +: 3], |robot_south_data[robot_south_block_x +: 3], |robot_north_data[robot_north_block_x +: 3], 1'b0};
-assign transparency = |(~robots_data & robot_type);
+assign robot_transparency = |(~robots_data & robot_type);
+wire cursor_data_transparency;
+wire cursor_transparency;
+assign cursor_data_transparency = cursor_data[cursor_x +: 3];
+assign cursor_transparency = (~cursor_data[cursor_x +: 3]);
+
 always @(posedge clock_50) begin
-	if (flags) begin
-		if(transparency) begin
+	if (flags[0]) begin
+		if(cursor_transparency) begin
+			graph_r <= r_next;
+			graph_g <= g_next;
+			graph_b <= b_next;
+		end
+		else begin
+			graph_r <= r_transparent;
+			graph_g <= g_transparent;
+			graph_b <= b_transparent;
+		end
+	end
+	else if (flags[1]) begin
+		if(robot_transparency) begin
 			graph_r <= r_next;
 			graph_g <= g_next;
 			graph_b <= b_next;
