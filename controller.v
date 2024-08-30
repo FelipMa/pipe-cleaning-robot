@@ -48,7 +48,7 @@ assign Flag = !vga_vs_primeiro_FF && vga_vs_segundo_FF;
 
 always @(posedge clock_50)
 begin
-	if (reset)
+	if (!reset)
 	begin
 		EstadoAtual <= AGUARDAR_ATIVACAO;
 		Contador <= 0;
