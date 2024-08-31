@@ -6,14 +6,6 @@ input wire [1:0] flags; // 1 é o flag do robô, 0 é o flag do cursor
 input wire [4:0] robot_type;
 output reg [7:0] graph_r, graph_g, graph_b;
 
-// posições máximas dos pixels do display de gráfico
-parameter MAX_X = 640;
-parameter MAX_Y = 480;
-
-// agora, os parâmetros da coluna 
-parameter WALL_X_L = 30;
-parameter WALL_X_R = 40;
-
 // internal wires
 reg robot_north_on, free_path_block_on, wall_block_on, black_block_on, trash_1_on, trash_2_on, trash_3_on, robot_south_on, robot_east_on, robot_west_on;
 // 20x15 sprites map
