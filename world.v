@@ -199,7 +199,7 @@ robot robot (.clock(robot_clock), .reset(reset_key), .head(head), .left(left), .
 
 // TODO control world with remote controller
 
-parameter DIV_FACTOR = 28'd200000000; // Divide by 200Mhz for 0.25hz (1 cycle every 4 seconds)
+parameter DIV_FACTOR = 28'd50000000; // Divide by 50Mhz for 1hz
 
 reg [27:0] counter = 28'b0;
 
