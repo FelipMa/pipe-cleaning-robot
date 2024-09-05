@@ -23,7 +23,7 @@ wire [1:0] robot_cursor_flags;
 pll pll (.inclk0(CLOCK_50), .c0(pll_clk_25));
 
 // build world
-world world (.clock_50(CLOCK_50), .reset_key(KEY[0]), .mode_toggle(SW[0]), .clock_toggle(KEY[3]), .mode(LEDG[7]), .pixel_x(pixel_x), .pixel_y(pixel_y), .sprite(sprite), .robot_cursor_flags(robot_cursor_flags), .robot_type(robot_type), .control_inputs(Saidas));
+world world (.clock_50(CLOCK_50), .reset_key(KEY[0]), .mode_toggle(SW[0]), .clock_toggle(KEY[3]), .mode(LEDG[7]), .pixel_x(pixel_x), .pixel_y(pixel_y), .sprite(sprite), .robot_cursor_flags(robot_cursor_flags), .robot_type(robot_type));
 
 // build vga
 vga_sync vga_sync(.clock_50(CLOCK_50), .clock_25(pll_clk_25), .reset_key(KEY[1]), .vga_hs(VGA_HS), .vga_vs(VGA_VS), .video_on(video_on), .pixel_x(pixel_x), .pixel_y(pixel_y));
