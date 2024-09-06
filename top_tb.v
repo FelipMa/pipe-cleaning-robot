@@ -22,7 +22,7 @@ wire [10:0] buttonsOut;
 integer file;
 integer frame_count;
 
-top DUV (.CLOCK_50(clock), .KEY(key), .VGA_HS(vga_hs), .VGA_VS(vga_vs), .VGA_R(vga_r), .VGA_G(vga_g), .VGA_B(vga_b), .VGA_CLK(), .LEDG(), .SW(switch), .up_z(1'b0), .down_y(1'b0), .left_x(1'b0), .right(1'b0), .a_b(1'b0), .selectSignal(1'b0), .start_c(1'b0), .buttonsOut(buttonsOut));
+top DUV (.CLOCK_50(clock), .KEY(key), .VGA_HS(vga_hs), .VGA_VS(vga_vs), .VGA_R(vga_r), .VGA_G(vga_g), .VGA_B(vga_b), .VGA_CLK(), .LEDG(), .SW(switch), .Pino1(Pino1), .Pino2(Pino2), .Pino3(Pino3), .Pino4(Pino4), .Pino6(Pino6), .Pino9(Pino9), .Select(Select));
 
 always begin
 	#1 clock = !clock;
@@ -61,15 +61,15 @@ initial begin
 
     switch[0] = 1'b1;
     #1
-
+	 
     start = 1'b1;
 
     $display("Initial data:");
     $display("Mode = %b", DUV.world.mode);
     get_robot_orientation_string;
     get_robot_states_strings;
-    $display("Data: Row =%d | Column =%d | Orientation =%s", DUV.world.robot_row, DUV.world.robot_column, robot_orientation_string);
-    $display("Head = %b | Left = %b | Barrier = %b | Under = %b", DUV.world.head, DUV.world.left, DUV.world.barrier, DUV.world.under);
+    $display("Data: Row =%d | Column =%d | Orientation =%s", DUV.world.robot_row_reg, DUV.world.robot_column_reg, robot_orientation_string);
+    $display("Head = %b | Left = %b | Barrier = %b | Under = %b", DUV.world.head_reg, DUV.world.left_reg, DUV.world.barrier_reg, DUV.world.under_reg);
     $display("Actual state:%s", robot_state_string);
     $display("Next state:%s", robot_next_state_string);
 
@@ -78,8 +78,8 @@ initial begin
     $display("\nData after clock toggle:");
     get_robot_orientation_string;
     get_robot_states_strings;
-    $display("Data: Row =%d | Column =%d | Orientation =%s", DUV.world.robot_row, DUV.world.robot_column, robot_orientation_string);
-    $display("Head = %b | Left = %b | Barrier = %b | Under = %b", DUV.world.head, DUV.world.left, DUV.world.barrier, DUV.world.under);
+    $display("Data: Row =%d | Column =%d | Orientation =%s", DUV.world.robot_row_reg, DUV.world.robot_column_reg, robot_orientation_string);
+    $display("Head = %b | Left = %b | Barrier = %b | Under = %b", DUV.world.head_reg, DUV.world.left_reg, DUV.world.barrier_reg, DUV.world.under_reg);
     $display("Actual state:%s", robot_state_string);
     $display("Next state:%s", robot_next_state_string);
 end
@@ -98,8 +98,8 @@ always @(DUV.pixel_x or DUV.pixel_y) begin
         $display("\nData after clock toggle:");
         get_robot_orientation_string;
         get_robot_states_strings;
-        $display("Data: Row =%d | Column =%d | Orientation =%s", DUV.world.robot_row, DUV.world.robot_column, robot_orientation_string);
-        $display("Head = %b | Left = %b | Barrier = %b | Under = %b", DUV.world.head, DUV.world.left, DUV.world.barrier, DUV.world.under);
+        $display("Data: Row =%d | Column =%d | Orientation =%s", DUV.world.robot_row_reg, DUV.world.robot_column_reg, robot_orientation_string);
+        $display("Head = %b | Left = %b | Barrier = %b | Under = %b", DUV.world.head_reg, DUV.world.left_reg, DUV.world.barrier_reg, DUV.world.under_reg);
         $display("Actual state:%s", robot_state_string);
         $display("Next state:%s", robot_next_state_string);
 
@@ -124,7 +124,7 @@ endtask
 
 task get_robot_orientation_string;
 begin
-    case (DUV.world.robot_orientation)
+    case (DUV.world.robot_orientation_reg)
         north: robot_orientation_string = "North";
         south: robot_orientation_string = "South";
         east: robot_orientation_string = "East";

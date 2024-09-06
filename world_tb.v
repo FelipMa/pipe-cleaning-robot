@@ -10,19 +10,13 @@ reg start = 1'b0;
 wire mode;
 wire [3:0] sprite;
 
-wire [1:0] robot_cursor_flags;
-wire [4:0] robot_type;
-wire [9:0] pixel_x;
-wire [9:0] pixel_y;
-
 reg [1:48] robot_orientation_string;
 reg [1:260] robot_state_string;
 reg [1:260] robot_next_state_string;
 
 integer i;
 
-
-world DUV (.clock_50(clock), .reset_key(reset_key), .mode_toggle(mode_toggle), .clock_toggle(clock_toggle), .mode(mode), .pixel_x(pixel_x), .pixel_y(pixel_y), .sprite(sprite), .robot_cursor_flags(robot_cursor_flags), .robot_type(robot_type));
+world DUV (.clock_50(clock), .reset_key(reset_key), .mode_toggle(mode_toggle), .clock_toggle(clock_toggle), .mode(mode), .pixel_x(1'b0), .pixel_y(1'b0), .sprite(sprite));
 
 always #1 clock = !clock;
 
@@ -77,14 +71,6 @@ begin
         $display ("Actual state:%s", robot_state_string);
         $display ("Next state:%s", robot_next_state_string);
         $display ("Front = %b | Turn = %b | Remove = %b", DUV.front, DUV.turn, DUV.remove);
-
-        // Checks if the robot is removing trash and if the removal status is in progress
-        if (DUV.robot.act_state == 3'b010 && DUV.remove == 1 && 
-            (DUV.trash_removal_state != 2'b00 && DUV.trash_removal_state != 2'b01)) 
-        begin
-            $display("Lowering the trash level...");
-        end
-
 		if (check_anomalous_situations(0)) $stop;
         $display ("\n");
 	end
