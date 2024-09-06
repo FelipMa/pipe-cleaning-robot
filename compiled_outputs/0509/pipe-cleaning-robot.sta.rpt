@@ -1,0 +1,1034 @@
+Timing Analyzer report for pipe-cleaning-robot
+Thu Sep 05 19:48:10 2024
+Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Timing Analyzer Summary
+  3. Parallel Compilation
+  4. Clocks
+  5. Fmax Summary
+  6. Timing Closure Recommendations
+  7. Setup Summary
+  8. Hold Summary
+  9. Recovery Summary
+ 10. Removal Summary
+ 11. Minimum Pulse Width Summary
+ 12. Setup: 'CLOCK_50'
+ 13. Setup: 'KEY[3]'
+ 14. Setup: 'world:world|robot_clock'
+ 15. Setup: 'SW[0]'
+ 16. Hold: 'CLOCK_50'
+ 17. Hold: 'world:world|robot_clock'
+ 18. Hold: 'SW[0]'
+ 19. Hold: 'KEY[3]'
+ 20. Recovery: 'KEY[3]'
+ 21. Recovery: 'SW[0]'
+ 22. Removal: 'SW[0]'
+ 23. Removal: 'KEY[3]'
+ 24. Metastability Summary
+ 25. Board Trace Model Assignments
+ 26. Input Transition Times
+ 27. Signal Integrity Metrics (Slow 1200mv 85c Model)
+ 28. Setup Transfers
+ 29. Hold Transfers
+ 30. Recovery Transfers
+ 31. Removal Transfers
+ 32. Report TCCS
+ 33. Report RSKM
+ 34. Unconstrained Paths Summary
+ 35. Clock Status Summary
+ 36. Unconstrained Input Ports
+ 37. Unconstrained Output Ports
+ 38. Unconstrained Input Ports
+ 39. Unconstrained Output Ports
+ 40. Timing Analyzer Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2018  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details.
+
+
+
++-----------------------------------------------------------------------------+
+; Timing Analyzer Summary                                                     ;
++-----------------------+-----------------------------------------------------+
+; Quartus Prime Version ; Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
+; Timing Analyzer       ; Legacy Timing Analyzer                              ;
+; Revision Name         ; pipe-cleaning-robot                                 ;
+; Device Family         ; Cyclone IV E                                        ;
+; Device Name           ; EP4CE115F29C7                                       ;
+; Timing Models         ; Final                                               ;
+; Delay Model           ; Slow 1200mV 85C Model                               ;
+; Rise/Fall Delays      ; Enabled                                             ;
++-----------------------+-----------------------------------------------------+
+
+
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 4           ;
+; Maximum allowed            ; 4           ;
+;                            ;             ;
+; Average used               ; 1.02        ;
+; Maximum used               ; 3           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
+;     Processor 2            ;   2.2%      ;
+;     Processor 3            ;   0.0%      ;
++----------------------------+-------------+
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Clocks                                                                                                                                                                                                                                                                                                              ;
++-------------------------------------------------+-----------+--------+------------+-------+--------+------------+-----------+-------------+-------+--------+-----------+------------+----------+----------+---------------------------------------------------+-----------------------------------------------------+
+; Clock Name                                      ; Type      ; Period ; Frequency  ; Rise  ; Fall   ; Duty Cycle ; Divide by ; Multiply by ; Phase ; Offset ; Edge List ; Edge Shift ; Inverted ; Master   ; Source                                            ; Targets                                             ;
++-------------------------------------------------+-----------+--------+------------+-------+--------+------------+-----------+-------------+-------+--------+-----------+------------+----------+----------+---------------------------------------------------+-----------------------------------------------------+
+; CLOCK_50                                        ; Base      ; 20.000 ; 50.0 MHz   ; 0.000 ; 10.000 ;            ;           ;             ;       ;        ;           ;            ;          ;          ;                                                   ; { CLOCK_50 }                                        ;
+; KEY[3]                                          ; Base      ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500  ;            ;           ;             ;       ;        ;           ;            ;          ;          ;                                                   ; { KEY[3] }                                          ;
+; pll|altpll_component|auto_generated|pll1|clk[0] ; Generated ; 40.000 ; 25.0 MHz   ; 0.000 ; 20.000 ; 50.00      ; 2         ; 1           ;       ;        ;           ;            ; false    ; CLOCK_50 ; pll|altpll_component|auto_generated|pll1|inclk[0] ; { pll|altpll_component|auto_generated|pll1|clk[0] } ;
+; SW[0]                                           ; Base      ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500  ;            ;           ;             ;       ;        ;           ;            ;          ;          ;                                                   ; { SW[0] }                                           ;
+; world:world|robot_clock                         ; Base      ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500  ;            ;           ;             ;       ;        ;           ;            ;          ;          ;                                                   ; { world:world|robot_clock }                         ;
++-------------------------------------------------+-----------+--------+------------+-------+--------+------------+-----------+-------------+-------+--------+-----------+------------+----------+----------+---------------------------------------------------+-----------------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------------+
+; Fmax Summary                                                                                            ;
++------------+-----------------+-------------------------+------------------------------------------------+
+; Fmax       ; Restricted Fmax ; Clock Name              ; Note                                           ;
++------------+-----------------+-------------------------+------------------------------------------------+
+; 62.13 MHz  ; 62.13 MHz       ; CLOCK_50                ;                                                ;
+; 478.47 MHz ; 437.64 MHz      ; world:world|robot_clock ; limit due to minimum period restriction (tmin) ;
++------------+-----------------+-------------------------+------------------------------------------------+
+This panel reports FMAX for every clock in the design, regardless of the user-specified clock periods.  FMAX is only computed for paths where the source and destination registers or ports are driven by the same clock.  Paths of different clocks, including generated clocks, are ignored.  For paths between a clock and its inversion, FMAX is computed as if the rising and falling edges are scaled along with FMAX, such that the duty cycle (in terms of a percentage) is maintained. Altera recommends that you always use clock constraints and other slack reports for sign-off analysis.
+
+
+----------------------------------
+; Timing Closure Recommendations ;
+----------------------------------
+HTML report is unavailable in plain text report export.
+
+
++--------------------------------------------------+
+; Setup Summary                                    ;
++-------------------------+--------+---------------+
+; Clock                   ; Slack  ; End Point TNS ;
++-------------------------+--------+---------------+
+; CLOCK_50                ; -3.361 ; -61.350       ;
+; KEY[3]                  ; -1.573 ; -1.573        ;
+; world:world|robot_clock ; -1.090 ; -4.555        ;
+; SW[0]                   ; -0.948 ; -0.948        ;
++-------------------------+--------+---------------+
+
+
++--------------------------------------------------+
+; Hold Summary                                     ;
++-------------------------+--------+---------------+
+; Clock                   ; Slack  ; End Point TNS ;
++-------------------------+--------+---------------+
+; CLOCK_50                ; -2.796 ; -27.897       ;
+; world:world|robot_clock ; 0.403  ; 0.000         ;
+; SW[0]                   ; 0.427  ; 0.000         ;
+; KEY[3]                  ; 0.761  ; 0.000         ;
++-------------------------+--------+---------------+
+
+
++---------------------------------+
+; Recovery Summary                ;
++--------+--------+---------------+
+; Clock  ; Slack  ; End Point TNS ;
++--------+--------+---------------+
+; KEY[3] ; -1.628 ; -1.628        ;
+; SW[0]  ; -0.838 ; -0.838        ;
++--------+--------+---------------+
+
+
++--------------------------------+
+; Removal Summary                ;
++--------+-------+---------------+
+; Clock  ; Slack ; End Point TNS ;
++--------+-------+---------------+
+; SW[0]  ; 0.309 ; 0.000         ;
+; KEY[3] ; 1.305 ; 0.000         ;
++--------+-------+---------------+
+
+
++--------------------------------------------------+
+; Minimum Pulse Width Summary                      ;
++-------------------------+--------+---------------+
+; Clock                   ; Slack  ; End Point TNS ;
++-------------------------+--------+---------------+
+; KEY[3]                  ; -3.000 ; -3.000        ;
+; SW[0]                   ; -3.000 ; -3.000        ;
+; world:world|robot_clock ; -1.285 ; -7.710        ;
+; CLOCK_50                ; 9.704  ; 0.000         ;
++-------------------------+--------+---------------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Setup: 'CLOCK_50'                                                                                                                                                                                   ;
++--------+--------------------------------------------------------------------+--------------------------------------+-------------------------+-------------+--------------+------------+------------+
+; Slack  ; From Node                                                          ; To Node                              ; Launch Clock            ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++--------+--------------------------------------------------------------------+--------------------------------------+-------------------------+-------------+--------------+------------+------------+
+; -3.361 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[8]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.505      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[5]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[8]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[7]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[6]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[4]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[3]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[2]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.350 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_row_reg[1]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.490      ;
+; -3.277 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[8]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.421      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[5]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[8]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[7]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[6]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[4]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[3]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[2]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.223 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_row_reg[1]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.363      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[5]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[8]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[7]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[6]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[4]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[3]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[2]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.206 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_row_reg[1]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 3.346      ;
+; -3.154 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[8]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.298      ;
+; -3.029 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[6]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.173      ;
+; -3.029 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[4]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.173      ;
+; -3.029 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[7]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.173      ;
+; -3.029 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[5]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.173      ;
+; -3.029 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[3]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.173      ;
+; -3.029 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[1]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.173      ;
+; -3.029 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_column_reg[2]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.173      ;
+; -2.936 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[6]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.080      ;
+; -2.936 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[4]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.080      ;
+; -2.936 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[7]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.080      ;
+; -2.936 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[5]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.080      ;
+; -2.936 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[3]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.080      ;
+; -2.936 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[1]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.080      ;
+; -2.936 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_column_reg[2]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 3.080      ;
+; -2.813 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[6]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.957      ;
+; -2.813 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[4]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.957      ;
+; -2.813 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[7]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.957      ;
+; -2.813 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[5]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.957      ;
+; -2.813 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[3]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.957      ;
+; -2.813 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[1]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.957      ;
+; -2.813 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_column_reg[2]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.957      ;
+; -2.765 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[8]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.909      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[5]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[8]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[7]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[6]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[4]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[3]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[2]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.706 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_row_reg[1]         ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.848     ; 2.846      ;
+; -2.493 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_orientation_reg[3] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.644      ;
+; -2.493 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_orientation_reg[4] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.644      ;
+; -2.424 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[6]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.568      ;
+; -2.424 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[4]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.568      ;
+; -2.424 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[7]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.568      ;
+; -2.424 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[5]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.568      ;
+; -2.424 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[3]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.568      ;
+; -2.424 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[1]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.568      ;
+; -2.424 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_column_reg[2]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.844     ; 2.568      ;
+; -2.248 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_orientation_reg[3] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.399      ;
+; -2.248 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_orientation_reg[4] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.399      ;
+; -2.178 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_orientation_reg[3] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.329      ;
+; -2.178 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot_orientation_reg[4] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.329      ;
+; -1.976 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_orientation_reg[3] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.127      ;
+; -1.976 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_orientation_reg[4] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; -0.837     ; 2.127      ;
+; -1.094 ; world:world|next_robot_clock                                       ; world:world|robot_clock              ; KEY[3]                  ; CLOCK_50    ; 1.000        ; 0.688      ; 2.770      ;
+; -1.075 ; world:world|robot_clock                                            ; world:world|robot_column_reg[8]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.732      ;
+; -1.049 ; world:world|robot_clock                                            ; world:world|robot_orientation_reg[3] ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.944      ; 4.713      ;
+; -0.935 ; world:world|robot_clock                                            ; world:world|robot_orientation_reg[4] ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.944      ; 4.599      ;
+; -0.912 ; world:world|robot_clock                                            ; world:world|head_reg                 ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.565      ;
+; -0.912 ; world:world|robot_clock                                            ; world:world|barrier_reg              ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.565      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[5]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[8]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[7]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[6]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[4]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[3]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[2]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.855 ; world:world|robot_clock                                            ; world:world|robot_row_reg[1]         ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.933      ; 4.508      ;
+; -0.800 ; world:world|next_mode                                              ; world:world|mode                     ; SW[0]                   ; CLOCK_50    ; 1.000        ; -0.297     ; 1.491      ;
+; -0.734 ; world:world|robot_clock                                            ; world:world|robot_column_reg[6]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.391      ;
+; -0.734 ; world:world|robot_clock                                            ; world:world|robot_column_reg[4]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.391      ;
+; -0.734 ; world:world|robot_clock                                            ; world:world|robot_column_reg[7]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.391      ;
+; -0.734 ; world:world|robot_clock                                            ; world:world|robot_column_reg[5]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.391      ;
+; -0.734 ; world:world|robot_clock                                            ; world:world|robot_column_reg[3]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.391      ;
+; -0.734 ; world:world|robot_clock                                            ; world:world|robot_column_reg[1]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.391      ;
+; -0.734 ; world:world|robot_clock                                            ; world:world|robot_column_reg[2]      ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.937      ; 4.391      ;
+; -0.641 ; world:world|robot_clock                                            ; world:world|under_reg                ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.935      ; 4.296      ;
+; -0.641 ; world:world|robot_clock                                            ; world:world|left_reg                 ; world:world|robot_clock ; CLOCK_50    ; 0.500        ; 2.935      ; 4.296      ;
+; -0.620 ; world:world|robot_clock                                            ; world:world|robot_column_reg[8]      ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; 2.937      ; 4.777      ;
+; -0.502 ; world:world|robot_clock                                            ; world:world|robot_orientation_reg[4] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; 2.944      ; 4.666      ;
+; -0.494 ; world:world|robot_clock                                            ; world:world|robot_orientation_reg[3] ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; 2.944      ; 4.658      ;
+; -0.436 ; world:world|robot_clock                                            ; world:world|head_reg                 ; world:world|robot_clock ; CLOCK_50    ; 1.000        ; 2.933      ; 4.589      ;
++--------+--------------------------------------------------------------------+--------------------------------------+-------------------------+-------------+--------------+------------+------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------+
+; Setup: 'KEY[3]'                                                                                                                                  ;
++--------+-------------------------+------------------------------+-------------------------+-------------+--------------+------------+------------+
+; Slack  ; From Node               ; To Node                      ; Launch Clock            ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++--------+-------------------------+------------------------------+-------------------------+-------------+--------------+------------+------------+
+; -1.573 ; world:world|robot_clock ; world:world|next_robot_clock ; world:world|robot_clock ; KEY[3]      ; 0.500        ; 2.181      ; 3.477      ;
+; -1.002 ; world:world|robot_clock ; world:world|next_robot_clock ; world:world|robot_clock ; KEY[3]      ; 1.000        ; 2.181      ; 3.406      ;
++--------+-------------------------+------------------------------+-------------------------+-------------+--------------+------------+------------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Setup: 'world:world|robot_clock'                                                                                                                                                                                                              ;
++--------+--------------------------------------------------------------------+--------------------------------------------------------------------+-------------------------+-------------------------+--------------+------------+------------+
+; Slack  ; From Node                                                          ; To Node                                                            ; Launch Clock            ; Latch Clock             ; Relationship ; Clock Skew ; Data Delay ;
++--------+--------------------------------------------------------------------+--------------------------------------------------------------------+-------------------------+-------------------------+--------------+------------+------------+
+; -1.090 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 2.008      ;
+; -1.060 ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.978      ;
+; -1.049 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.967      ;
+; -1.036 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.954      ;
+; -1.021 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.939      ;
+; -1.021 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.939      ;
+; -0.944 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.862      ;
+; -0.932 ; world:world|robot:robot|act_state.rotating                         ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.850      ;
+; -0.824 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.742      ;
+; -0.822 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.740      ;
+; -0.747 ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.665      ;
+; -0.726 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.644      ;
+; -0.633 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 2.184      ;
+; -0.614 ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.532      ;
+; -0.612 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.530      ;
+; -0.578 ; world:world|robot:robot|act_state.rotating                         ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.496      ;
+; -0.514 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 2.067      ;
+; -0.511 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 2.064      ;
+; -0.502 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 2.053      ;
+; -0.491 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.409      ;
+; -0.488 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 2.041      ;
+; -0.487 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.stand_by                         ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 2.038      ;
+; -0.485 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 2.036      ;
+; -0.458 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 2.009      ;
+; -0.417 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 1.970      ;
+; -0.403 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.stand_by                         ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 1.956      ;
+; -0.402 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.stand_by                         ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 1.955      ;
+; -0.389 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 1.940      ;
+; -0.359 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.first_move                       ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 1.912      ;
+; -0.342 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.first_move                       ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 1.895      ;
+; -0.310 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 1.863      ;
+; -0.304 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.565      ; 1.857      ;
+; -0.253 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 1.804      ;
+; -0.253 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.first_move                       ; CLOCK_50                ; world:world|robot_clock ; 1.000        ; 0.563      ; 1.804      ;
+; -0.249 ; world:world|robot:robot|act_state.rotating                         ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.167      ;
+; -0.168 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 1.086      ;
+; -0.079 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 0.997      ;
+; 0.184  ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 0.734      ;
+; 0.184  ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 0.734      ;
+; 0.184  ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_clock ; world:world|robot_clock ; 1.000        ; -0.080     ; 0.734      ;
++--------+--------------------------------------------------------------------+--------------------------------------------------------------------+-------------------------+-------------------------+--------------+------------+------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------+
+; Setup: 'SW[0]'                                                                                                          ;
++--------+------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; Slack  ; From Node        ; To Node               ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++--------+------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; -0.948 ; world:world|mode ; world:world|next_mode ; CLOCK_50     ; SW[0]       ; 1.000        ; 0.079      ; 0.850      ;
++--------+------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Hold: 'CLOCK_50'                                                                                                                                                                                                   ;
++--------+-----------------------------------------------------+--------------------------------------------+-------------------------------------------------+-------------+--------------+------------+------------+
+; Slack  ; From Node                                           ; To Node                                    ; Launch Clock                                    ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++--------+-----------------------------------------------------+--------------------------------------------+-------------------------------------------------+-------------+--------------+------------+------------+
+; -2.796 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[0]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.780      ;
+; -2.796 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[1]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.780      ;
+; -2.796 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[2]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.780      ;
+; -2.796 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[3]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.780      ;
+; -2.796 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[4]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.780      ;
+; -2.796 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[7]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.780      ;
+; -2.796 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[6]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.780      ;
+; -2.775 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[9]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.801      ;
+; -2.775 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[5]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.801      ;
+; -2.775 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[8]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.801      ;
+; -2.729 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[0]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.847      ;
+; -2.729 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[1]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.847      ;
+; -2.729 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[2]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.847      ;
+; -2.729 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[3]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.847      ;
+; -2.729 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[4]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.847      ;
+; -2.729 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[7]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.847      ;
+; -2.729 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[6]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.847      ;
+; -2.718 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[9]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.858      ;
+; -2.718 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[5]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.858      ;
+; -2.718 ; pll|altpll_component|auto_generated|pll1|clk[0]     ; vga_sync:vga_sync|h_count_reg[8]           ; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50    ; 0.000        ; 7.380      ; 4.858      ;
+; 0.402  ; controller:controller|EstadoAtual.ESTADO_7          ; controller:controller|EstadoAtual.ESTADO_7 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.669      ;
+; 0.402  ; controller:controller|EstadoAtual.ESTADO_5          ; controller:controller|EstadoAtual.ESTADO_5 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.669      ;
+; 0.402  ; controller:controller|EstadoAtual.ESTADO_3          ; controller:controller|EstadoAtual.ESTADO_3 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.669      ;
+; 0.402  ; controller:controller|EstadoAtual.ESTADO_0          ; controller:controller|EstadoAtual.ESTADO_0 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.669      ;
+; 0.403  ; world:world|robot_column_reg[8]                     ; world:world|robot_column_reg[8]            ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.669      ;
+; 0.403  ; world:world|robot_orientation_reg[3]                ; world:world|robot_orientation_reg[3]       ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.669      ;
+; 0.403  ; world:world|robot_orientation_reg[4]                ; world:world|robot_orientation_reg[4]       ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.669      ;
+; 0.465  ; controller:controller|Contador[12]                  ; controller:controller|Contador[12]         ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.731      ;
+; 0.608  ; controller:controller|vga_vs_primeiro_FF            ; controller:controller|vga_vs_segundo_FF    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.874      ;
+; 0.635  ; controller:controller|Contador[1]                   ; controller:controller|Contador[1]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.901      ;
+; 0.639  ; controller:controller|Contador[2]                   ; controller:controller|Contador[2]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.905      ;
+; 0.641  ; graphics:graphics|r_transparent_reg[1]              ; graphics:graphics|graph_r[1]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.906      ;
+; 0.641  ; world:world|counter[1]                              ; world:world|counter[1]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.907      ;
+; 0.642  ; world:world|counter[3]                              ; world:world|counter[3]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.908      ;
+; 0.643  ; world:world|counter[25]                             ; world:world|counter[25]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.909      ;
+; 0.644  ; world:world|counter[27]                             ; world:world|counter[27]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.910      ;
+; 0.644  ; world:world|counter[4]                              ; world:world|counter[4]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.910      ;
+; 0.644  ; world:world|counter[7]                              ; world:world|counter[7]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.910      ;
+; 0.644  ; world:world|counter[20]                             ; world:world|counter[20]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.910      ;
+; 0.645  ; world:world|counter[5]                              ; world:world|counter[5]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.911      ;
+; 0.645  ; world:world|counter[21]                             ; world:world|counter[21]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.911      ;
+; 0.645  ; world:world|counter[23]                             ; world:world|counter[23]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.911      ;
+; 0.647  ; world:world|counter[2]                              ; world:world|counter[2]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.913      ;
+; 0.647  ; world:world|counter[6]                              ; world:world|counter[6]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.913      ;
+; 0.648  ; world:world|counter[26]                             ; world:world|counter[26]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.914      ;
+; 0.648  ; world:world|counter[22]                             ; world:world|counter[22]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.914      ;
+; 0.649  ; world:world|counter[24]                             ; world:world|counter[24]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.915      ;
+; 0.655  ; world:world|counter[11]                             ; world:world|counter[11]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.921      ;
+; 0.655  ; world:world|counter[13]                             ; world:world|counter[13]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.921      ;
+; 0.656  ; world:world|counter[9]                              ; world:world|counter[9]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.922      ;
+; 0.656  ; world:world|counter[17]                             ; world:world|counter[17]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.922      ;
+; 0.656  ; world:world|counter[19]                             ; world:world|counter[19]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.922      ;
+; 0.657  ; controller:controller|Contador[11]                  ; controller:controller|Contador[11]         ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.923      ;
+; 0.657  ; world:world|robot_row_reg[5]                        ; world:world|robot_row_reg[5]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.923      ;
+; 0.657  ; world:world|counter[15]                             ; world:world|counter[15]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.923      ;
+; 0.658  ; world:world|robot_row_reg[1]                        ; world:world|robot_row_reg[1]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.924      ;
+; 0.659  ; vga_sync:vga_sync|v_count_reg[8]                    ; vga_sync:vga_sync|v_count_reg[8]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.925      ;
+; 0.659  ; vga_sync:vga_sync|v_count_reg[7]                    ; vga_sync:vga_sync|v_count_reg[7]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.925      ;
+; 0.659  ; vga_sync:vga_sync|v_count_reg[5]                    ; vga_sync:vga_sync|v_count_reg[5]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.925      ;
+; 0.660  ; world:world|counter[12]                             ; world:world|counter[12]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.926      ;
+; 0.660  ; world:world|counter[14]                             ; world:world|counter[14]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.926      ;
+; 0.661  ; controller:controller|Contador[0]                   ; controller:controller|Contador[0]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.927      ;
+; 0.661  ; world:world|counter[8]                              ; world:world|counter[8]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.927      ;
+; 0.661  ; world:world|counter[10]                             ; world:world|counter[10]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.927      ;
+; 0.661  ; world:world|counter[16]                             ; world:world|counter[16]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.927      ;
+; 0.662  ; world:world|counter[18]                             ; world:world|counter[18]                    ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.928      ;
+; 0.662  ; vga_sync:vga_sync|h_count_reg[6]                    ; vga_sync:vga_sync|h_count_reg[6]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.927      ;
+; 0.663  ; controller:controller|Contador[3]                   ; controller:controller|Contador[3]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.929      ;
+; 0.663  ; controller:controller|EstadoAtual.ESTADO_4          ; controller:controller|EstadoAtual.ESTADO_5 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.930      ;
+; 0.664  ; controller:controller|Contador[5]                   ; controller:controller|Contador[5]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.930      ;
+; 0.664  ; controller:controller|EstadoAtual.ESTADO_2          ; controller:controller|EstadoAtual.ESTADO_3 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.931      ;
+; 0.667  ; controller:controller|Contador[7]                   ; controller:controller|Contador[7]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.933      ;
+; 0.667  ; controller:controller|Contador[9]                   ; controller:controller|Contador[9]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.933      ;
+; 0.670  ; world:world|counter[0]                              ; world:world|counter[0]                     ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.936      ;
+; 0.671  ; controller:controller|Contador[10]                  ; controller:controller|Contador[10]         ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.937      ;
+; 0.674  ; controller:controller|Contador[6]                   ; controller:controller|Contador[6]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.940      ;
+; 0.677  ; controller:controller|Contador[4]                   ; controller:controller|Contador[4]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.943      ;
+; 0.679  ; world:world|robot_row_reg[3]                        ; world:world|robot_row_reg[3]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.945      ;
+; 0.681  ; graphics:graphics|b_transparent_reg[7]              ; graphics:graphics|graph_b[7]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.946      ;
+; 0.685  ; controller:controller|EstadoAtual.AGUARDAR_ATIVACAO ; controller:controller|EstadoAtual.ESTADO_0 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.952      ;
+; 0.685  ; world:world|robot_row_reg[8]                        ; world:world|robot_row_reg[8]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 0.951      ;
+; 0.686  ; vga_sync:vga_sync|h_count_reg[4]                    ; vga_sync:vga_sync|h_count_reg[4]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.951      ;
+; 0.696  ; graphics:graphics|g_transparent_reg[0]              ; graphics:graphics|graph_g[0]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.961      ;
+; 0.698  ; graphics:graphics|g_transparent_reg[6]              ; graphics:graphics|graph_g[6]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.963      ;
+; 0.698  ; graphics:graphics|r_transparent_reg[7]              ; graphics:graphics|graph_r[7]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.963      ;
+; 0.699  ; graphics:graphics|b_transparent_reg[0]              ; graphics:graphics|graph_b[0]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.964      ;
+; 0.706  ; controller:controller|EstadoAtual.ESTADO_6          ; controller:controller|EstadoAtual.ESTADO_7 ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.081      ; 0.973      ;
+; 0.710  ; vga_sync:vga_sync|h_count_reg[8]                    ; vga_sync:vga_sync|h_sync_reg               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 0.975      ;
+; 0.770  ; world:world|robot_clock                             ; world:world|under_reg                      ; world:world|robot_clock                         ; CLOCK_50    ; 0.000        ; 3.047      ; 4.265      ;
+; 0.770  ; world:world|robot_clock                             ; world:world|left_reg                       ; world:world|robot_clock                         ; CLOCK_50    ; 0.000        ; 3.047      ; 4.265      ;
+; 0.786  ; vga_sync:vga_sync|v_count_reg[9]                    ; vga_sync:vga_sync|v_count_reg[9]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 1.052      ;
+; 0.817  ; controller:controller|Contador[8]                   ; controller:controller|Contador[8]          ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 1.083      ;
+; 0.818  ; graphics:graphics|b_transparent_reg[2]              ; graphics:graphics|graph_b[2]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 1.083      ;
+; 0.818  ; world:world|robot_row_reg[6]                        ; world:world|robot_row_reg[6]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 1.084      ;
+; 0.831  ; vga_sync:vga_sync|h_count_reg[7]                    ; vga_sync:vga_sync|h_sync_reg               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 1.096      ;
+; 0.833  ; vga_sync:vga_sync|h_count_reg[9]                    ; vga_sync:vga_sync|h_count_reg[5]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 1.098      ;
+; 0.834  ; vga_sync:vga_sync|h_count_reg[9]                    ; vga_sync:vga_sync|h_count_reg[9]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 1.099      ;
+; 0.834  ; vga_sync:vga_sync|h_count_reg[9]                    ; vga_sync:vga_sync|h_count_reg[8]           ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.079      ; 1.099      ;
+; 0.837  ; graphics:graphics|r_transparent_reg[0]              ; graphics:graphics|graph_r[0]               ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 1.103      ;
+; 0.837  ; world:world|reset_flag                              ; world:world|robot_orientation_reg[3]       ; CLOCK_50                                        ; CLOCK_50    ; 0.000        ; 0.080      ; 1.103      ;
++--------+-----------------------------------------------------+--------------------------------------------+-------------------------------------------------+-------------+--------------+------------+------------+
+
+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Hold: 'world:world|robot_clock'                                                                                                                                                                                                              ;
++-------+--------------------------------------------------------------------+--------------------------------------------------------------------+-------------------------+-------------------------+--------------+------------+------------+
+; Slack ; From Node                                                          ; To Node                                                            ; Launch Clock            ; Latch Clock             ; Relationship ; Clock Skew ; Data Delay ;
++-------+--------------------------------------------------------------------+--------------------------------------------------------------------+-------------------------+-------------------------+--------------+------------+------------+
+; 0.403 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 0.669      ;
+; 0.403 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 0.669      ;
+; 0.403 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 0.669      ;
+; 0.500 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.564      ;
+; 0.578 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.first_move                       ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.640      ;
+; 0.588 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.first_move                       ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.652      ;
+; 0.601 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.663      ;
+; 0.634 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.first_move                       ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 0.900      ;
+; 0.641 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.stand_by                         ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.705      ;
+; 0.643 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.705      ;
+; 0.649 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.713      ;
+; 0.653 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.first_move                       ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.717      ;
+; 0.654 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.718      ;
+; 0.657 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.stand_by                         ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.721      ;
+; 0.660 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 0.926      ;
+; 0.678 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.742      ;
+; 0.702 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.764      ;
+; 0.718 ; world:world|barrier_reg                                            ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.782      ;
+; 0.737 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.stand_by                         ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.799      ;
+; 0.745 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.rotating                         ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.807      ;
+; 0.756 ; world:world|under_reg                                              ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.818      ;
+; 0.758 ; world:world|head_reg                                               ; world:world|robot:robot|act_state.removing_trash_or_following_left ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.848      ; 1.822      ;
+; 0.791 ; world:world|robot:robot|act_state.rotating                         ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.057      ;
+; 0.871 ; world:world|left_reg                                               ; world:world|robot:robot|act_state.searching_trash_or_left          ; CLOCK_50                ; world:world|robot_clock ; 0.000        ; 0.846      ; 1.933      ;
+; 0.985 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.251      ;
+; 1.017 ; world:world|robot:robot|act_state.rotating                         ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.283      ;
+; 1.061 ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.327      ;
+; 1.074 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.340      ;
+; 1.103 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.369      ;
+; 1.258 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.524      ;
+; 1.266 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.532      ;
+; 1.277 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.543      ;
+; 1.296 ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.562      ;
+; 1.312 ; world:world|robot:robot|act_state.rotating                         ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.578      ;
+; 1.368 ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.634      ;
+; 1.458 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.removing_trash_or_following_left ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.724      ;
+; 1.462 ; world:world|robot:robot|act_state.first_move                       ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.728      ;
+; 1.466 ; world:world|robot:robot|act_state.reseting                         ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.732      ;
+; 1.582 ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot:robot|act_state.rotating                         ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.848      ;
+; 1.588 ; world:world|robot:robot|act_state.stand_by                         ; world:world|robot:robot|act_state.searching_trash_or_left          ; world:world|robot_clock ; world:world|robot_clock ; 0.000        ; 0.080      ; 1.854      ;
++-------+--------------------------------------------------------------------+--------------------------------------------------------------------+-------------------------+-------------------------+--------------+------------+------------+
+
+
++------------------------------------------------------------------------------------------------------------------------+
+; Hold: 'SW[0]'                                                                                                          ;
++-------+------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; Slack ; From Node        ; To Node               ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++-------+------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; 0.427 ; world:world|mode ; world:world|next_mode ; CLOCK_50     ; SW[0]       ; 0.000        ; 0.297      ; 0.754      ;
++-------+------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------+
+; Hold: 'KEY[3]'                                                                                                                                  ;
++-------+-------------------------+------------------------------+-------------------------+-------------+--------------+------------+------------+
+; Slack ; From Node               ; To Node                      ; Launch Clock            ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++-------+-------------------------+------------------------------+-------------------------+-------------+--------------+------------+------------+
+; 0.761 ; world:world|robot_clock ; world:world|next_robot_clock ; world:world|robot_clock ; KEY[3]      ; 0.000        ; 2.249      ; 3.272      ;
+; 1.314 ; world:world|robot_clock ; world:world|next_robot_clock ; world:world|robot_clock ; KEY[3]      ; -0.500       ; 2.249      ; 3.325      ;
++-------+-------------------------+------------------------------+-------------------------+-------------+--------------+------------+------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------+
+; Recovery: 'KEY[3]'                                                                                                                   ;
++--------+------------------------+------------------------------+--------------+-------------+--------------+------------+------------+
+; Slack  ; From Node              ; To Node                      ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++--------+------------------------+------------------------------+--------------+-------------+--------------+------------+------------+
+; -1.628 ; world:world|reset_flag ; world:world|next_robot_clock ; CLOCK_50     ; KEY[3]      ; 1.000        ; -0.875     ; 0.744      ;
++--------+------------------------+------------------------------+--------------+-------------+--------------+------------+------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------+
+; Recovery: 'SW[0]'                                                                                                             ;
++--------+------------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; Slack  ; From Node              ; To Node               ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++--------+------------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; -0.838 ; world:world|reset_flag ; world:world|next_mode ; CLOCK_50     ; SW[0]       ; 1.000        ; 0.079      ; 0.740      ;
++--------+------------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+
+
++------------------------------------------------------------------------------------------------------------------------------+
+; Removal: 'SW[0]'                                                                                                             ;
++-------+------------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; Slack ; From Node              ; To Node               ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++-------+------------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+; 0.309 ; world:world|reset_flag ; world:world|next_mode ; CLOCK_50     ; SW[0]       ; 0.000        ; 0.297      ; 0.636      ;
++-------+------------------------+-----------------------+--------------+-------------+--------------+------------+------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------+
+; Removal: 'KEY[3]'                                                                                                                   ;
++-------+------------------------+------------------------------+--------------+-------------+--------------+------------+------------+
+; Slack ; From Node              ; To Node                      ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
++-------+------------------------+------------------------------+--------------+-------------+--------------+------------+------------+
+; 1.305 ; world:world|reset_flag ; world:world|next_robot_clock ; CLOCK_50     ; KEY[3]      ; 0.000        ; -0.695     ; 0.640      ;
++-------+------------------------+------------------------------+--------------+-------------+--------------+------------+------------+
+
+
+-------------------------
+; Metastability Summary ;
+-------------------------
+No synchronizer chains to report.
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Board Trace Model Assignments                                                                                                                                                                                                                                                                                                                                                                                    ;
++---------------+--------------+-------------------+-------------------------+-------------------------+---------------+---------------------+----------------+------------------+--------+------------------+------------------------+------------------------+--------------+---------------+-----------------+-------+---------------------+--------------------+---------------+-----------------+-------------+
+; Pin           ; I/O Standard ; Near Tline Length ; Near Tline L per Length ; Near Tline C per Length ; Near Series R ; Near Differential R ; Near Pull-up R ; Near Pull-down R ; Near C ; Far Tline Length ; Far Tline L per Length ; Far Tline C per Length ; Far Series R ; Far Pull-up R ; Far Pull-down R ; Far C ; Termination Voltage ; Far Differential R ; EBD File Name ; EBD Signal Name ; EBD Far-end ;
++---------------+--------------+-------------------+-------------------------+-------------------------+---------------+---------------------+----------------+------------------+--------+------------------+------------------------+------------------------+--------------+---------------+-----------------+-------+---------------------+--------------------+---------------+-----------------+-------------+
+; VGA_HS        ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_VS        ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[0]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[1]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[2]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[3]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[4]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[5]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[6]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_R[7]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[0]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[1]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[2]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[3]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[4]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[5]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[6]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_G[7]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[0]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[1]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[2]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[3]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[4]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[5]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[6]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_B[7]      ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; VGA_CLK       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[0]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[1]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[2]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[3]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[4]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[5]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[6]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[7]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; LEDG[8]       ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[0]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[1]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[2]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[3]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[4]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[5]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[6]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[7]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[8]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[9]     ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[10]    ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Saidas[11]    ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; Select        ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; ~ALTERA_DCLK~ ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
+; ~ALTERA_nCEO~ ; 2.5 V        ; 0 in              ; 0 H/in                  ; 0 F/in                  ; short         ; -                   ; open           ; open             ; open   ; 0 in             ; 0 H/in                 ; 0 F/in                 ; short        ; open          ; open            ; open  ; 0 V                 ; -                  ; n/a           ; n/a             ; n/a         ;
++---------------+--------------+-------------------+-------------------------+-------------------------+---------------+---------------------+----------------+------------------+--------+------------------+------------------------+------------------------+--------------+---------------+-----------------+-------+---------------------+--------------------+---------------+-----------------+-------------+
+
+
++----------------------------------------------------------------------------+
+; Input Transition Times                                                     ;
++-------------------------+--------------+-----------------+-----------------+
+; Pin                     ; I/O Standard ; 10-90 Rise Time ; 90-10 Fall Time ;
++-------------------------+--------------+-----------------+-----------------+
+; KEY[2]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[1]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[2]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[3]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[4]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[5]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[6]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[7]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[8]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[9]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[10]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[11]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[12]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[13]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[14]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[15]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[16]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[17]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; CLOCK_50                ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; KEY[1]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; KEY[0]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; Pino1                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; Pino2                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; Pino3                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; Pino4                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; Pino6                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; Pino9                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; SW[0]                   ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; KEY[3]                  ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; ~ALTERA_ASDO_DATA1~     ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; ~ALTERA_FLASH_nCE_nCSO~ ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
+; ~ALTERA_DATA0~          ; 2.5 V        ; 2000 ps         ; 2000 ps         ;
++-------------------------+--------------+-----------------+-----------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Signal Integrity Metrics (Slow 1200mv 85c Model)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ;
++---------------+--------------+---------------------+---------------------+------------------------------+------------------------------+---------------------+---------------------+--------------------------------------+--------------------------------------+-----------------------------+-----------------------------+----------------------------+----------------------------+-----------------------------+-----------------------------+--------------------+--------------------+-------------------------------------+-------------------------------------+----------------------------+----------------------------+---------------------------+---------------------------+
+; Pin           ; I/O Standard ; Board Delay on Rise ; Board Delay on Fall ; Steady State Voh at FPGA Pin ; Steady State Vol at FPGA Pin ; Voh Max at FPGA Pin ; Vol Min at FPGA Pin ; Ringback Voltage on Rise at FPGA Pin ; Ringback Voltage on Fall at FPGA Pin ; 10-90 Rise Time at FPGA Pin ; 90-10 Fall Time at FPGA Pin ; Monotonic Rise at FPGA Pin ; Monotonic Fall at FPGA Pin ; Steady State Voh at Far-end ; Steady State Vol at Far-end ; Voh Max at Far-end ; Vol Min at Far-end ; Ringback Voltage on Rise at Far-end ; Ringback Voltage on Fall at Far-end ; 10-90 Rise Time at Far-end ; 90-10 Fall Time at Far-end ; Monotonic Rise at Far-end ; Monotonic Fall at Far-end ;
++---------------+--------------+---------------------+---------------------+------------------------------+------------------------------+---------------------+---------------------+--------------------------------------+--------------------------------------+-----------------------------+-----------------------------+----------------------------+----------------------------+-----------------------------+-----------------------------+--------------------+--------------------+-------------------------------------+-------------------------------------+----------------------------+----------------------------+---------------------------+---------------------------+
+; VGA_HS        ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_VS        ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[0]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[1]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[2]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[3]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[4]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[5]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[6]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_R[7]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[0]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[1]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[2]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[3]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[4]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[5]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[6]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_G[7]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[0]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[1]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[2]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[3]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[4]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[5]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[6]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_B[7]      ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; VGA_CLK       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[0]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[1]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[2]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[3]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[4]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[5]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[6]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[7]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; LEDG[8]       ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[0]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[1]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[2]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[3]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[4]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[5]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[6]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[7]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[8]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[9]     ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[10]    ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Saidas[11]    ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; Select        ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.92e-07 V                   ; 2.35 V              ; -0.00996 V          ; 0.121 V                              ; 0.03 V                               ; 4.64e-10 s                  ; 4.47e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 6.92e-07 V                  ; 2.35 V             ; -0.00996 V         ; 0.121 V                             ; 0.03 V                              ; 4.64e-10 s                 ; 4.47e-10 s                 ; Yes                       ; Yes                       ;
+; ~ALTERA_DCLK~ ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 3.75e-07 V                   ; 2.35 V              ; -0.0109 V           ; 0.084 V                              ; 0.027 V                              ; 4.31e-10 s                  ; 3.61e-10 s                  ; Yes                        ; Yes                        ; 2.32 V                      ; 3.75e-07 V                  ; 2.35 V             ; -0.0109 V          ; 0.084 V                             ; 0.027 V                             ; 4.31e-10 s                 ; 3.61e-10 s                 ; Yes                       ; Yes                       ;
+; ~ALTERA_nCEO~ ; 2.5 V        ; 0 s                 ; 0 s                 ; 2.32 V                       ; 6.15e-07 V                   ; 2.35 V              ; -0.00712 V          ; 0.093 V                              ; 0.02 V                               ; 6.21e-10 s                  ; 7.9e-10 s                   ; Yes                        ; Yes                        ; 2.32 V                      ; 6.15e-07 V                  ; 2.35 V             ; -0.00712 V         ; 0.093 V                             ; 0.02 V                              ; 6.21e-10 s                 ; 7.9e-10 s                  ; Yes                       ; Yes                       ;
++---------------+--------------+---------------------+---------------------+------------------------------+------------------------------+---------------------+---------------------+--------------------------------------+--------------------------------------+-----------------------------+-----------------------------+----------------------------+----------------------------+-----------------------------+-----------------------------+--------------------+--------------------+-------------------------------------+-------------------------------------+----------------------------+----------------------------+---------------------------+---------------------------+
+
+
++-----------------------------------------------------------------------------------------------------------------------+
+; Setup Transfers                                                                                                       ;
++-------------------------------------------------+-------------------------+----------+----------+----------+----------+
+; From Clock                                      ; To Clock                ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
++-------------------------------------------------+-------------------------+----------+----------+----------+----------+
+; CLOCK_50                                        ; CLOCK_50                ; 1529456  ; 30       ; 1        ; 1        ;
+; KEY[3]                                          ; CLOCK_50                ; 1        ; 0        ; 0        ; 0        ;
+; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50                ; 20       ; 20       ; 0        ; 0        ;
+; SW[0]                                           ; CLOCK_50                ; 1        ; 0        ; 0        ; 0        ;
+; world:world|robot_clock                         ; CLOCK_50                ; 114      ; 22       ; 0        ; 0        ;
+; world:world|robot_clock                         ; KEY[3]                  ; 1        ; 1        ; 0        ; 0        ;
+; CLOCK_50                                        ; SW[0]                   ; 1        ; 0        ; 0        ; 0        ;
+; CLOCK_50                                        ; world:world|robot_clock ; 22       ; 0        ; 0        ; 0        ;
+; world:world|robot_clock                         ; world:world|robot_clock ; 25       ; 0        ; 0        ; 0        ;
++-------------------------------------------------+-------------------------+----------+----------+----------+----------+
+Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
+
+
++-----------------------------------------------------------------------------------------------------------------------+
+; Hold Transfers                                                                                                        ;
++-------------------------------------------------+-------------------------+----------+----------+----------+----------+
+; From Clock                                      ; To Clock                ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
++-------------------------------------------------+-------------------------+----------+----------+----------+----------+
+; CLOCK_50                                        ; CLOCK_50                ; 1529456  ; 30       ; 1        ; 1        ;
+; KEY[3]                                          ; CLOCK_50                ; 1        ; 0        ; 0        ; 0        ;
+; pll|altpll_component|auto_generated|pll1|clk[0] ; CLOCK_50                ; 20       ; 20       ; 0        ; 0        ;
+; SW[0]                                           ; CLOCK_50                ; 1        ; 0        ; 0        ; 0        ;
+; world:world|robot_clock                         ; CLOCK_50                ; 114      ; 22       ; 0        ; 0        ;
+; world:world|robot_clock                         ; KEY[3]                  ; 1        ; 1        ; 0        ; 0        ;
+; CLOCK_50                                        ; SW[0]                   ; 1        ; 0        ; 0        ; 0        ;
+; CLOCK_50                                        ; world:world|robot_clock ; 22       ; 0        ; 0        ; 0        ;
+; world:world|robot_clock                         ; world:world|robot_clock ; 25       ; 0        ; 0        ; 0        ;
++-------------------------------------------------+-------------------------+----------+----------+----------+----------+
+Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
+
+
++-------------------------------------------------------------------+
+; Recovery Transfers                                                ;
++------------+----------+----------+----------+----------+----------+
+; From Clock ; To Clock ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
++------------+----------+----------+----------+----------+----------+
+; CLOCK_50   ; KEY[3]   ; 1        ; 0        ; 0        ; 0        ;
+; CLOCK_50   ; SW[0]    ; 1        ; 0        ; 0        ; 0        ;
++------------+----------+----------+----------+----------+----------+
+Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
+
+
++-------------------------------------------------------------------+
+; Removal Transfers                                                 ;
++------------+----------+----------+----------+----------+----------+
+; From Clock ; To Clock ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
++------------+----------+----------+----------+----------+----------+
+; CLOCK_50   ; KEY[3]   ; 1        ; 0        ; 0        ; 0        ;
+; CLOCK_50   ; SW[0]    ; 1        ; 0        ; 0        ; 0        ;
++------------+----------+----------+----------+----------+----------+
+Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
+
+
+---------------
+; Report TCCS ;
+---------------
+No dedicated SERDES Transmitter circuitry present in device or used in design
+
+
+---------------
+; Report RSKM ;
+---------------
+No non-DPA dedicated SERDES Receiver circuitry present in device or used in design
+
+
++------------------------------------------------+
+; Unconstrained Paths Summary                    ;
++---------------------------------+-------+------+
+; Property                        ; Setup ; Hold ;
++---------------------------------+-------+------+
+; Illegal Clocks                  ; 0     ; 0    ;
+; Unconstrained Clocks            ; 0     ; 0    ;
+; Unconstrained Input Ports       ; 8     ; 8    ;
+; Unconstrained Input Port Paths  ; 103   ; 103  ;
+; Unconstrained Output Ports      ; 41    ; 41   ;
+; Unconstrained Output Port Paths ; 44    ; 44   ;
++---------------------------------+-------+------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+; Clock Status Summary                                                                                                        ;
++-------------------------------------------------+-------------------------------------------------+-----------+-------------+
+; Target                                          ; Clock                                           ; Type      ; Status      ;
++-------------------------------------------------+-------------------------------------------------+-----------+-------------+
+; CLOCK_50                                        ; CLOCK_50                                        ; Base      ; Constrained ;
+; KEY[3]                                          ; KEY[3]                                          ; Base      ; Constrained ;
+; SW[0]                                           ; SW[0]                                           ; Base      ; Constrained ;
+; pll|altpll_component|auto_generated|pll1|clk[0] ; pll|altpll_component|auto_generated|pll1|clk[0] ; Generated ; Constrained ;
+; world:world|robot_clock                         ; world:world|robot_clock                         ; Base      ; Constrained ;
++-------------------------------------------------+-------------------------------------------------+-----------+-------------+
+
+
++---------------------------------------------------------------------------------------------------+
+; Unconstrained Input Ports                                                                         ;
++------------+--------------------------------------------------------------------------------------+
+; Input Port ; Comment                                                                              ;
++------------+--------------------------------------------------------------------------------------+
+; KEY[0]     ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; KEY[1]     ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino1      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino2      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino3      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino4      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino6      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino9      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
++------------+--------------------------------------------------------------------------------------+
+
+
++-----------------------------------------------------------------------------------------------------+
+; Unconstrained Output Ports                                                                          ;
++-------------+---------------------------------------------------------------------------------------+
+; Output Port ; Comment                                                                               ;
++-------------+---------------------------------------------------------------------------------------+
+; LEDG[7]     ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[0]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[1]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[2]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[3]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[4]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[5]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[6]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[7]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[8]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[9]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[10]  ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[11]  ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Select      ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[0]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[1]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[2]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[3]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[4]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[5]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[6]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[7]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_CLK     ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[0]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[1]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[2]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[3]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[4]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[5]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[6]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[7]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_HS      ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[0]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[1]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[2]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[3]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[4]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[5]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[6]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[7]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_VS      ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
++-------------+---------------------------------------------------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------+
+; Unconstrained Input Ports                                                                         ;
++------------+--------------------------------------------------------------------------------------+
+; Input Port ; Comment                                                                              ;
++------------+--------------------------------------------------------------------------------------+
+; KEY[0]     ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; KEY[1]     ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino1      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino2      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino3      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino4      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino6      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Pino9      ; No input delay, min/max delays, false-path exceptions, or max skew assignments found ;
++------------+--------------------------------------------------------------------------------------+
+
+
++-----------------------------------------------------------------------------------------------------+
+; Unconstrained Output Ports                                                                          ;
++-------------+---------------------------------------------------------------------------------------+
+; Output Port ; Comment                                                                               ;
++-------------+---------------------------------------------------------------------------------------+
+; LEDG[7]     ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[0]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[1]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[2]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[3]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[4]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[5]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[6]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[7]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[8]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[9]   ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[10]  ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Saidas[11]  ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; Select      ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[0]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[1]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[2]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[3]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[4]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[5]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[6]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_B[7]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_CLK     ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[0]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[1]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[2]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[3]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[4]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[5]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[6]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_G[7]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_HS      ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[0]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[1]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[2]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[3]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[4]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[5]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[6]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_R[7]    ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
+; VGA_VS      ; No output delay, min/max delays, false-path exceptions, or max skew assignments found ;
++-------------+---------------------------------------------------------------------------------------+
+
+
++--------------------------+
+; Timing Analyzer Messages ;
++--------------------------+
+Info: *******************************************************************
+Info: Running Quartus Prime Timing Analyzer
+    Info: Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+    Info: Processing started: Thu Sep 05 19:48:08 2024
+Info: Command: quartus_sta pipe-cleaning-robot -c pipe-cleaning-robot
+Info: qsta_default_script.tcl version: #1
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (21077): Low junction temperature is 0 degrees C
+Info (21077): High junction temperature is 85 degrees C
+Warning (335093): The Timing Analyzer is analyzing 2 combinational loops as latches. For more details, run the Check Timing command in the Timing Analyzer or view the "User-Specified and Inferred Latches" table in the Analysis & Synthesis report.
+Critical Warning (332012): Synopsys Design Constraints File file not found: 'pipe-cleaning-robot.sdc'. A Synopsys Design Constraints File is required by the Timing Analyzer to get proper timing constraints. Without it, the Compiler will not properly optimize the design.
+Info (332142): No user constrained generated clocks found in the design. Calling "derive_pll_clocks -create_base_clocks"
+Info (332110): Deriving PLL clocks
+    Info (332110): create_clock -period 20.000 -waveform {0.000 10.000} -name CLOCK_50 CLOCK_50
+    Info (332110): create_generated_clock -source {pll|altpll_component|auto_generated|pll1|inclk[0]} -divide_by 2 -duty_cycle 50.00 -name {pll|altpll_component|auto_generated|pll1|clk[0]} {pll|altpll_component|auto_generated|pll1|clk[0]}
+Info (332142): No user constrained base clocks found in the design. Calling "derive_clocks -period 1.0"
+Info (332105): Deriving Clocks
+    Info (332105): create_clock -period 1.000 -name world:world|robot_clock world:world|robot_clock
+    Info (332105): create_clock -period 1.000 -name KEY[3] KEY[3]
+    Info (332105): create_clock -period 1.000 -name SW[0] SW[0]
+Info (332143): No user constrained clock uncertainty found in the design. Calling "derive_clock_uncertainty"
+Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
+Info: Found TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS = ON
+Critical Warning (332148): Timing requirements not met
+    Info (11105): For recommendations on closing timing, run Report Timing Closure Recommendations in the Timing Analyzer.
+Info (332146): Worst-case setup slack is -3.361
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):    -3.361             -61.350 CLOCK_50 
+    Info (332119):    -1.573              -1.573 KEY[3] 
+    Info (332119):    -1.090              -4.555 world:world|robot_clock 
+    Info (332119):    -0.948              -0.948 SW[0] 
+Info (332146): Worst-case hold slack is -2.796
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):    -2.796             -27.897 CLOCK_50 
+    Info (332119):     0.403               0.000 world:world|robot_clock 
+    Info (332119):     0.427               0.000 SW[0] 
+    Info (332119):     0.761               0.000 KEY[3] 
+Info (332146): Worst-case recovery slack is -1.628
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):    -1.628              -1.628 KEY[3] 
+    Info (332119):    -0.838              -0.838 SW[0] 
+Info (332146): Worst-case removal slack is 0.309
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):     0.309               0.000 SW[0] 
+    Info (332119):     1.305               0.000 KEY[3] 
+Info (332146): Worst-case minimum pulse width slack is -3.000
+    Info (332119):     Slack       End Point TNS Clock 
+    Info (332119): ========= =================== =====================
+    Info (332119):    -3.000              -3.000 KEY[3] 
+    Info (332119):    -3.000              -3.000 SW[0] 
+    Info (332119):    -1.285              -7.710 world:world|robot_clock 
+    Info (332119):     9.704               0.000 CLOCK_50 
+Info (332102): Design is not fully constrained for setup requirements
+Info (332102): Design is not fully constrained for hold requirements
+Info: Quartus Prime Timing Analyzer was successful. 0 errors, 4 warnings
+    Info: Peak virtual memory: 4815 megabytes
+    Info: Processing ended: Thu Sep 05 19:48:10 2024
+    Info: Elapsed time: 00:00:02
+    Info: Total CPU time (on all processors): 00:00:02
+
+

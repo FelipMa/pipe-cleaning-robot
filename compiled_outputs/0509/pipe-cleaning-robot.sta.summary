@@ -1,0 +1,69 @@
+------------------------------------------------------------
+Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Setup 'CLOCK_50'
+Slack : -3.361
+TNS   : -61.350
+
+Type  : Setup 'KEY[3]'
+Slack : -1.573
+TNS   : -1.573
+
+Type  : Setup 'world:world|robot_clock'
+Slack : -1.090
+TNS   : -4.555
+
+Type  : Setup 'SW[0]'
+Slack : -0.948
+TNS   : -0.948
+
+Type  : Hold 'CLOCK_50'
+Slack : -2.796
+TNS   : -27.897
+
+Type  : Hold 'world:world|robot_clock'
+Slack : 0.403
+TNS   : 0.000
+
+Type  : Hold 'SW[0]'
+Slack : 0.427
+TNS   : 0.000
+
+Type  : Hold 'KEY[3]'
+Slack : 0.761
+TNS   : 0.000
+
+Type  : Recovery 'KEY[3]'
+Slack : -1.628
+TNS   : -1.628
+
+Type  : Recovery 'SW[0]'
+Slack : -0.838
+TNS   : -0.838
+
+Type  : Removal 'SW[0]'
+Slack : 0.309
+TNS   : 0.000
+
+Type  : Removal 'KEY[3]'
+Slack : 1.305
+TNS   : 0.000
+
+Type  : Minimum Pulse Width 'KEY[3]'
+Slack : -3.000
+TNS   : -3.000
+
+Type  : Minimum Pulse Width 'SW[0]'
+Slack : -3.000
+TNS   : -3.000
+
+Type  : Minimum Pulse Width 'world:world|robot_clock'
+Slack : -1.285
+TNS   : -7.710
+
+Type  : Minimum Pulse Width 'CLOCK_50'
+Slack : 9.704
+TNS   : 0.000
+
+------------------------------------------------------------

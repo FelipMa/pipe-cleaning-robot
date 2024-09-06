@@ -1,0 +1,14 @@
+Analysis & Synthesis Status : Successful - Thu Sep 05 19:44:12 2024
+Quartus Prime Version : 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+Revision Name : pipe-cleaning-robot
+Top-level Entity Name : top
+Family : Cyclone IV E
+Total logic elements : 1,408
+    Total combinational functions : 1,397
+    Dedicated logic registers : 158
+Total registers : 158
+Total pins : 78
+Total virtual pins : 0
+Total memory bits : 0
+Embedded Multiplier 9-bit elements : 0
+Total PLLs : 1
