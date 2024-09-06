@@ -117,8 +117,6 @@ always @(posedge clock_50) begin
         else if (mode == 1'b1) begin
             robot_clock <= next_robot_clock;
         end
-
-        
         mode <= next_mode;
         robot_cursor_flags <= next_robot_cursor_flags;
     end
@@ -168,6 +166,35 @@ end
 // Saidas[1] = Saida_Down
 // Saidas[0] = Saida_Up
 
+always @(robot_clock or reset_flag) begin
+	if (reset_flag) begin
+		robot_row_reg = {map_reg[1], map_reg[2]};
+		robot_column_reg = {map_reg[3], map_reg[4]};
+		robot_orientation_reg = map_reg[5];
+		
+		
+	end
+	else begin
+		robot_row_reg <= robot_row_next;
+		robot_column_reg <= robot_column_next;
+		robot_orientation_reg <= robot_orientation_next;
+		
+	end
+end
+always @(negedge robot_clock or posedge reset_flag) begin
+	if (reset_flag) begin
+		trash_removal_state_reg <= 0;
+	end
+	else begin
+		trash_removal_state_reg <= trash_removal_state_next;
+	end
+end
+always @(posedge clock_50 or posedge reset_flag) begin
+	head_reg <= head_next;
+	left_reg <= left_next;
+	under_reg <= under_next;
+	barrier_reg <= barrier_next;
+end
 
 
 integer i;
@@ -177,18 +204,14 @@ initial begin
 	$readmemb("map.txt", map_reg);
 end
 
-always @(posedge clock_50 or negedge reset_key) begin // ------------------------> @(posedge clock_50 or negedge reset_key)
-	if (~reset_key) begin 
+always @(posedge clock_50 or posedge reset_flag) begin // ------------------------> @(posedge clock_50 or negedge reset_key)
+	if (reset_flag) begin 
 		$readmemb("map.txt", map_reg);
-		robot_row_reg = {map_reg[1], map_reg[2]};
-		robot_column_reg = {map_reg[3], map_reg[4]};
-		robot_orientation_reg = map_reg[5];
 		cursor_row_reg = 8'b11111110; // out of range;
 		cursor_column_reg = 8'b11111110; // out of range;
 		pause_flag_reg = 0;
 		map_change_flag_reg = 0;
 		sprite_temp_robot_reg = free_path;
-		trash_removal_state_reg <= 0;
 	end
 	else begin 
 		cursor_row_reg <= cursor_row_next;
@@ -197,19 +220,11 @@ always @(posedge clock_50 or negedge reset_key) begin // -----------------------
 		map_change_flag_reg <= map_change_flag_next;
 		sprite_temp_robot_reg <= sprite_temp_robot_next;
 		cursor_address_reg <= cursor_address_next;
-		head_reg <= head_next;
-		left_reg <= left_next;
-		under_reg <= under_next;
-		barrier_reg <= barrier_next;
-		robot_row_reg <= robot_row_next;
-		robot_column_reg <= robot_column_next;
-		robot_orientation_reg <= robot_orientation_next;
 		address_reg <= address_next;
 		column_offset_reg <= column_offset_next;
 		row_offset_reg <= row_offset_next;
 		surroundings_temp_reg <= surroundings_temp_next;
 		sprite_temp_reg <= sprite_temp_next;
-		trash_removal_state_reg <= trash_removal_state_next;	
 		for (i = 1; i <= 320; i = i + 1) begin
         map_reg[i] = map_next[i];
 		end
@@ -236,27 +251,25 @@ always @(*) begin
 	 robot_column_next = robot_column_reg;
 	 robot_orientation_next = robot_orientation_reg;
 	 trash_removal_state_next = trash_removal_state_reg;
+	 define_sensors_values;
 	for (i = 1; i <= 320; i = i + 1) begin
 	    map_next[i] = map_reg[i];
 	end
     if (reset_flag) begin
         trash_removal_state_next = 2'b00;
-        define_sensors_values;
     end
 	else begin // robot movement and updates
         if (control_inputs[10]) begin // pause flag!
             pause_flag_next = ~pause_flag_reg;
 				cursor_column_next = 8'd1;
             cursor_row_next = 8'd1;
-        end 
-		  else 
+        end  
         if (pause_flag_reg == 0) begin 
             cursor_column_next = 8'd21; // out of display range
             cursor_row_next = 8'd16; // out of display range
             if (robot_clock == 1'b1) begin
                 update_robot_position;
                 remove_trash;
-                define_sensors_values;
             end
         end 
         else begin
@@ -433,32 +446,29 @@ endtask
 
 task remove_trash;
 begin
-    if (remove == 1)
-    begin
-			if (robot_clock) begin
-        if (trash_removal_state_reg == 2'b00 || trash_removal_state_reg == 2'b01)
-            trash_removal_state_next = trash_removal_state_reg + 1'b1;
-			end
-        else
-        begin
-            trash_removal_state_next = 2'b00;    
-            case (robot_orientation_reg)
-                north:  begin row_offset_next = -1; column_offset_next = 0;  end
-                south:  begin row_offset_next = 1;  column_offset_next = 0;  end
-                east:   begin row_offset_next = 0;  column_offset_next = 1;  end
-                west:   begin row_offset_next = 0;  column_offset_next = -1; end
-                default:begin row_offset_next = 0;  column_offset_next = 0;  end // default case
-            endcase
-				address_next = get_map_address(robot_row_reg + row_offset_reg, robot_column_reg + column_offset_reg);
-            surroundings_temp_next = map_reg[get_map_address(robot_row_reg + row_offset_reg, robot_column_reg + column_offset_reg)];
-            case (surroundings_temp_next)
-                trash_1: begin sprite_temp_next = free_path; trash_removal_state_next = 2'b00; end
-                trash_2: begin sprite_temp_next = trash_1; trash_removal_state_next = 2'b00; end
-                trash_3: begin sprite_temp_next = trash_2; trash_removal_state_next = 2'b00; end
-                default: begin sprite_temp_next = free_path; trash_removal_state_next = 2'b00; end
-            endcase
-            map_next[address_next] = sprite_temp_next;
-        end
+    if (remove == 1) begin
+		case (robot_orientation_reg)
+				 north:  begin row_offset_next = -1; column_offset_next = 0;  end
+				 south:  begin row_offset_next = 1;  column_offset_next = 0;  end
+				 east:   begin row_offset_next = 0;  column_offset_next = 1;  end
+				 west:   begin row_offset_next = 0;  column_offset_next = -1; end
+				 default:begin row_offset_next = 0;  column_offset_next = 0;  end // default case
+			endcase
+		address_next = get_map_address(robot_row_reg + row_offset_reg, robot_column_reg + column_offset_reg);
+		surroundings_temp_next = map_reg[get_map_address(robot_row_reg + row_offset_reg, robot_column_reg + column_offset_reg)];
+		if (trash_removal_state_reg == 2'b00 || trash_removal_state_reg == 2'b01 || trash_removal_state_reg == 2'b10) begin
+			trash_removal_state_next = trash_removal_state_reg + 1'b1;
+		end
+		else begin
+			trash_removal_state_next = 2'b00;    
+			case (surroundings_temp_next)
+				 trash_1: begin sprite_temp_next = free_path; trash_removal_state_next = 2'b00; end
+				 trash_2: begin sprite_temp_next = trash_1; trash_removal_state_next = 2'b00; end
+				 trash_3: begin sprite_temp_next = trash_2; trash_removal_state_next = 2'b00; end
+				 default: begin sprite_temp_next = sprite_temp_reg; trash_removal_state_next = 2'b00; end
+			endcase 
+			map_next[address_next] = sprite_temp_next;
+	  end
     end
 end
 endtask
